@@ -1,0 +1,124 @@
+services:
+  postgres-admin:
+    image: postgres:15
+    container_name: quizbot-postgres-admin
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB_ADMIN}
+      - POSTGRES_USER=${POSTGRES_USER_ADMIN}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_ADMIN}
+    volumes:
+      - db-admin-data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_EXTERNAL_PORT_ADMIN}:${POSTGRES_INTERNAL_PORT_ADMIN}"
+    networks:
+      - admin-db-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER_ADMIN}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server-admin:
+    build:
+      context: ./server-admin
+      dockerfile: Dockerfile
+    container_name: quizbot-server-admin
+    ports:
+      - "${SERVICE_EXTERNAL_PORT_ADMIN}:${SERVICE_INTERNAL_PORT_ADMIN}"
+    networks:
+      - admin-db-network
+      - client-admin-network
+    volumes:
+      - ./server-admin:/app
+      - ./server-admin/.air.toml:/app/.air.toml
+    environment:
+      - DB_HOST=${POSTGRES_HOST_ADMIN}
+      - DB_PORT=${POSTGRES_INTERNAL_PORT_ADMIN}
+      - DB_USER=${POSTGRES_USER_ADMIN}
+      - DB_PASSWORD=${POSTGRES_PASSWORD_ADMIN}
+      - DB_NAME=${POSTGRES_DB_ADMIN}
+    depends_on:
+      postgres-admin:
+        condition: service_healthy
+  
+  postgres-player:
+    image: postgres:15
+    container_name: quizbot-postgres-player
+    env_file:
+      - ./.env
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB_PLAYER}
+      - POSTGRES_USER=${POSTGRES_USER_PLAYER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_PLAYER}
+    volumes:
+      - db-player-data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_EXTERNAL_PORT_PLAYER}:${POSTGRES_INTERNAL_PORT_PLAYER}"
+    networks:
+      - player-db-network
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER_PLAYER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server-player:
+    build:
+      context: ./server-player
+      dockerfile: Dockerfile
+    container_name: quizbot-server-player
+    ports:
+      - "${SERVICE_EXTERNAL_PORT_PLAYER}:${SERVICE_INTERNAL_PORT_PLAYER}"
+    networks:
+      - player-db-network
+      - client-player-network
+    volumes:
+      - ./server-player:/app
+      - ./server-player/.air.toml:/app/.air.toml
+    environment:
+      - DB_HOST=${POSTGRES_HOST_PLAYER}
+      - DB_PORT=${POSTGRES_INTERNAL_PORT_PLAYER}
+      - DB_USER=${POSTGRES_USER_PLAYER}
+      - DB_PASSWORD=${POSTGRES_PASSWORD_PLAYER}
+      - DB_NAME=${POSTGRES_DB_PLAYER}
+    depends_on:
+      postgres-player:
+        condition: service_healthy
+  
+  quiz-bot-client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: quizbot-client
+    restart: unless-stopped
+    env_file:
+      - ./.env
+    environment:
+      - ADMIN_API_URL=http://server-admin:${SERVICE_EXTERNAL_PORT_ADMIN}
+      - PLAYER_API_URL=http://server-player:${SERVICE_EXTERNAL_PORT_PLAYER}
+    networks:
+      - client-admin-network
+      - client-player-network
+    volumes:
+      - ./client/.air.toml:/app/.air.toml
+      - ./client:/app
+      - ./.env:/app/.env
+
+networks:
+  client-admin-network:
+    driver: bridge
+  
+  admin-db-network:
+    driver: bridge
+  
+  client-player-network:
+    driver: bridge
+  
+  player-db-network:
+    driver: bridge
+
+volumes:
+  db-admin-data:
+  db-player-data:

@@ -1,0 +1,18 @@
+root = "."
+testdata_dir = "testdata"
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go build -o ./tmp/main ."
+  bin = "tmp/main"
+  delay = 1000
+  # ВКЛЮЧАЕМ POLLING ДЛЯ WINDOWS
+  poll = true
+  poll_interval = 1000  # Проверять изменения каждую секунду
+
+[log]
+  main_only = false
+  time = false
+
+[misc]
+  clean_on_exit = false
