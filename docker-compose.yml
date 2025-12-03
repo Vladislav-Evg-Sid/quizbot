@@ -87,6 +87,18 @@ services:
       postgres-player:
         condition: service_healthy
   
+  quiz-redis:
+    image: redis:7.2-alpine
+    container_name: quizbot-redis
+    ports:
+      - "${REDIS_EXTERNAL_PORT}:${REDIS_INTERNAL_PORT}"
+    networks:
+      - redis-network
+    volumes:
+      - ./redis-data:/data
+    command: redis-server --appendonly yes --bind 0.0.0.0
+    restart: unless-stopped
+
   quiz-bot-client:
     build:
       context: ./client
@@ -98,9 +110,11 @@ services:
     environment:
       - ADMIN_API_URL=http://server-admin:${SERVICE_EXTERNAL_PORT_ADMIN}
       - PLAYER_API_URL=http://server-player:${SERVICE_EXTERNAL_PORT_PLAYER}
+      - REDIS_URL=quiz-redis:${REDIS_EXTERNAL_PORT}
     networks:
       - client-admin-network
       - client-player-network
+      - redis-network
     volumes:
       - ./client/.air.toml:/app/.air.toml
       - ./client:/app
@@ -117,6 +131,9 @@ networks:
     driver: bridge
   
   player-db-network:
+    driver: bridge
+  
+  redis-network:
     driver: bridge
 
 volumes:

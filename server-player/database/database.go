@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"quiz-server-player/models"
 
 	_ "github.com/lib/pq"
 )
@@ -37,121 +36,17 @@ func Init() error {
 	if err != nil {
 		return err
 	}
-	return addTopicsData()
-}
 
-func createTables() error {
-	query := `
-    CREATE TABLE IF NOT EXISTS topics (
-        id SERIAL PRIMARY KEY,
-        title VARCHAR(100) NOT NULL UNIQUE,
-        is_active BOOLEAN DEFAULT TRUE,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-	CREATE TABLE IF NOT EXISTS questions (
-		id SERIAL PRIMARY KEY,
-		topic_id INTEGER,
-		question_text TEXT,
-		answers JSONB,
-		correct_option_index SMALLINT NOT NULL,
-		hard_level VARCHAR(20) NOT NULL,
-		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-	)`
-
-	_, err := DB.Exec(query)
+	err = addTopicsData()
 	if err != nil {
-		return fmt.Errorf("failed to create users table: %v", err)
+		return err
 	}
 
-	log.Println("✅ Users database tables created/verified")
-	return nil
-}
-
-func addTopicsData() error {
-	query := `
-    INSERT INTO topics (title) VALUES 
-		('История России'),
-		('Всемирная история'),
-		('География мира'),
-		('Биология'),
-		('Химия'),
-		('Физика'),
-		('Математика'),
-		('Программирование'),
-		('Музыка'),
-		('Кинематограф'),
-		('Живопись'),
-		('Спортивные события'),
-		('Кулинария'),
-		('Путешествия'),
-		('Космос'),
-		('Техника'),
-		('Литература'),
-		('Мультфильмы'),
-		('Видеоигры')
-	ON CONFLICT (title)
-	DO NOTHING;`
-
-	_, err := DB.Exec(query)
+	err = addQuestionsForTopics()
 	if err != nil {
-		return fmt.Errorf("failed to insert topics: %v", err)
+		return err
 	}
 
 	log.Println("✅ Topics inserted in table")
 	return nil
 }
-
-// func CreateOrUpdateUser(user *models.User) error {
-// 	query := `
-//     INSERT INTO users (telegram_id, name, username, is_admin)
-//     VALUES ($1, $2, $3, $4)
-//     ON CONFLICT (telegram_id)
-//     DO UPDATE SET name = $2, username = $3
-//     RETURNING id, is_admin
-//     `
-
-// 	err := DB.QueryRow(query, user.TelegramID, user.Name, user.Username, user.IsAdmin).Scan(&user.ID, &user.IsAdmin)
-// 	return err
-// }
-
-func GetAllTopics() ([]*models.ActiveTopics, error) {
-	var topics []*models.ActiveTopics
-	query := `SELECT id, title FROM topics WHERE is_active;`
-
-	rows, err := DB.Query(query)
-
-	if err == sql.ErrNoRows {
-		return nil, nil
-	}
-
-	defer rows.Close()
-	for rows.Next() {
-		topic := &models.ActiveTopics{}
-		err := rows.Scan(&topic.ID, &topic.Title)
-		if err != nil {
-			return nil, err
-		}
-		topics = append(topics, topic)
-	}
-
-	if err = rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return topics, err
-}
-
-// func GetUserByTelegramID(telegramID int64) (*models.User, error) {
-// 	user := &models.User{}
-// 	query := `SELECT id, telegram_id, name, username, is_admin FROM users WHERE telegram_id = $1`
-
-// 	err := DB.QueryRow(query, telegramID).Scan(
-// 		&user.ID, &user.TelegramID, &user.Name, &user.Username, &user.IsAdmin,
-// 	)
-
-// 	if err == sql.ErrNoRows {
-// 		return nil, nil
-// 	}
-
-// 	return user, err
-// }

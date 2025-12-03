@@ -3,10 +3,14 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"quiz-bot-client/models"
+	"quiz-bot-client/redisclient"
+	"strconv"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -17,13 +21,13 @@ func main() {
 	// Загружаем .env
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		panic("Отсутствует .env файл")
 	}
 
 	// Получаем токен бота
 	token := os.Getenv("BOT_TOKEN")
 	if token == "" {
-		log.Fatal("BOT_TOKEN is not set in .env file")
+		panic("Требуется токен для бота")
 	}
 
 	adminAPIURL := os.Getenv("ADMIN_API_URL")
@@ -38,7 +42,13 @@ func main() {
 	// Создаем бота
 	bot, err := tgbotapi.NewBotAPI(token)
 	if err != nil {
-		log.Fatal(err)
+		panic("Невозможно создать бота")
+	}
+
+	err = redisclient.InitRedis()
+	if err != nil {
+		log.Panicf("Инициализация redis не успешна: %v", err)
+		panic("Инициализация redis не успешна")
 	}
 
 	bot.Debug = true
@@ -58,13 +68,28 @@ func main() {
 
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 
+		// Проверка возможных входных данных
+		fmt.Println("********", update.Message.Text)
 		switch {
 		case update.Message.Text == "/start":
 			handleStartCommand(bot, update.Message, adminAPIURL)
 		case strings.HasSuffix(strings.ToLower(update.Message.Text), "выбрать тему викторины"):
 			handleChooseThemeCommand(bot, update.Message, playerAPIURL)
 		default:
-			bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Я не понял. Выберите с клавиатуры или пропишите /start"))
+			session, err := redisclient.GetUserSession(update.Message.From.ID)
+			if err != nil {
+				log.Printf("Redis error: %v", err)
+				bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "❌ Ошибка сервера"))
+				continue
+			}
+
+			if session == nil {
+				// Нет игровой сессии: создаём новую
+				handleGetQuestionsForQuiz(bot, update.Message, playerAPIURL)
+			} else {
+				// Есть игровая сессия: продолжаем играть
+				handleProcessAnswer(bot, update.Message, session)
+			}
 		}
 	}
 }
@@ -96,7 +121,6 @@ func handleStartCommand(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, adminAPIURL
 		keyboard := tgbotapi.NewReplyKeyboard(
 			tgbotapi.NewKeyboardButtonRow(
 				tgbotapi.NewKeyboardButton("🎯 Выбрать тему викторины"),
-				// tgbotapi.NewKeyboardButton("📊 Рейтинги"),
 			),
 		)
 
@@ -117,14 +141,13 @@ func handleStartCommand(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, adminAPIURL
 
 func handleChooseThemeCommand(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, playerAPIURL string) {
 	resp, err := http.Get(playerAPIURL + "/api/users/topics")
-
 	if err != nil {
 		log.Printf("Error calling player API: %v", err)
-		bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "❌ Ошибка соединения с сервером"+err.Error()))
+		bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "❌ Ошибка соединения с сервером"))
 		return
 	}
-	defer resp.Body.Close()
 
+	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusOK {
 		var result models.AllTopicsResponse
 		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -132,19 +155,27 @@ func handleChooseThemeCommand(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, playe
 			return
 		}
 
-		// keyboard := tgbotapi.NewReplyKeyboard(
-		// 	tgbotapi.NewKeyboardButtonRow(
-		// 		tgbotapi.NewKeyboardButton("🎯 Выбрать тему викторины"),
-		// 		tgbotapi.NewKeyboardButton("📊 Рейтинги"),
-		// 	),
-		// )
-		msg_text := "Список имеющихся тем викторины:"
-		for _, topic := range result.Topics {
-			msg_text = msg_text + "\n" + topic.Title
+		var keyboardButtons [][]tgbotapi.KeyboardButton
+		var keyboardButtonsRow []tgbotapi.KeyboardButton
+		colCountInKeyboard := 2
+		for topic_number, topic := range result.Topics {
+			keyboardButtonsRow = append(keyboardButtonsRow, tgbotapi.NewKeyboardButton(strconv.Itoa(topic_number+1)+". "+topic.Title))
+			if len(keyboardButtonsRow) == colCountInKeyboard {
+				keyboardButtons = append(keyboardButtons,
+					tgbotapi.NewKeyboardButtonRow(keyboardButtonsRow...),
+				)
+				keyboardButtonsRow = nil
+			}
 		}
+		if len(keyboardButtonsRow) > 0 {
+			keyboardButtons = append(keyboardButtons,
+				tgbotapi.NewKeyboardButtonRow(keyboardButtonsRow...),
+			)
+		}
+		keyboard := tgbotapi.NewReplyKeyboard(keyboardButtons...)
 
-		msg := tgbotapi.NewMessage(msg.Chat.ID, msg_text)
-		// msg.ReplyMarkup = keyboard
+		msg := tgbotapi.NewMessage(msg.Chat.ID, "Выбирите тему из списка")
+		msg.ReplyMarkup = keyboard
 
 		bot.Send(msg)
 	} else {
@@ -156,4 +187,114 @@ func handleChooseThemeCommand(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, playe
 		}
 		bot.Send(tgbotapi.NewMessage(msg.Chat.ID, errorMsg))
 	}
+}
+
+func handleGetQuestionsForQuiz(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, playerAPIURL string) {
+	topicName := msg.Text
+	parts := strings.SplitN(topicName, ". ", 2)
+
+	if len(parts) < 2 {
+		log.Print("Topic processing error: bad topic's name")
+		bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "❌ Ошибка обработки темы викторины"))
+		return
+	}
+
+	topicName = parts[1]
+	resp, err := http.Get(fmt.Sprintf("%s/api/player/tenquestions/%s", playerAPIURL, url.PathEscape(topicName)))
+	if err != nil {
+		log.Printf("Error calling player API: %v", err)
+		bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "❌ Ошибка соединения с сервером"))
+		return
+	}
+
+	defer resp.Body.Close()
+	if resp.StatusCode == http.StatusOK {
+		var result models.TenQuestionsResponse
+		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+			bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "❌ Ошибка обработки ответа"))
+			return
+		}
+
+		_, err := redisclient.CreateGameSession(msg.From.ID, result.TopicId, result.Questions)
+		if err != nil {
+			log.Printf("Error create play session: %v", err)
+			bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "❌ Ошибка создания игровой сессии"))
+			return
+		}
+
+		var keyboardButtons [][]tgbotapi.KeyboardButton
+		for _, answer := range result.Questions[0].Options {
+			keyboardButtons = append(keyboardButtons,
+				tgbotapi.NewKeyboardButtonRow(tgbotapi.NewKeyboardButton(answer)),
+			)
+		}
+		keyboard := tgbotapi.NewReplyKeyboard(keyboardButtons...)
+
+		msg := tgbotapi.NewMessage(msg.Chat.ID, result.Questions[0].Level+" вопрос:\n"+result.Questions[0].Text)
+		msg.ReplyMarkup = keyboard
+
+		bot.Send(msg)
+	} else {
+		var errorResp map[string]interface{}
+		json.NewDecoder(resp.Body).Decode(&errorResp)
+		errorMsg := "❌ Ошибка получения вопросов"
+		if errMsg, ok := errorResp["error"].(string); ok {
+			errorMsg += ": " + errMsg
+		}
+		bot.Send(tgbotapi.NewMessage(msg.Chat.ID, errorMsg))
+	}
+}
+
+func handleProcessAnswer(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, session *models.GameSession) {
+	hardLevel2Score := map[string]int{
+		"простой": 1,
+		"средний": 2,
+		"сложный": 4,
+	}
+
+	userAnswer := msg.Text
+
+	correctAnswerIndex := session.Questions[session.CurrentQuestionIndex].CorrectIndex
+	correctAnswer := session.Questions[session.CurrentQuestionIndex].Options[correctAnswerIndex]
+
+	if userAnswer == correctAnswer {
+		session.Score += hardLevel2Score[session.Questions[session.CurrentQuestionIndex].Level]
+	}
+	session.CurrentQuestionIndex++
+
+	if err := redisclient.UpdateGameSession(session); err != nil {
+		log.Printf("Error update play session: %v", err)
+		bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "❌ Ошибка обновления игровой сессии"))
+		return
+	}
+
+	if session.CurrentQuestionIndex == len(session.Questions) {
+		redisclient.DeleteGameSession(msg.From.ID, session.SessionID)
+		// Добавить запись в БД
+
+		keyboard := tgbotapi.NewReplyKeyboard(
+			tgbotapi.NewKeyboardButtonRow(
+				tgbotapi.NewKeyboardButton("🎯 Выбрать тему викторины"),
+			),
+		)
+
+		new_msg := tgbotapi.NewMessage(msg.Chat.ID, "Спасибо за игру!\nВаш результат: "+strconv.Itoa(session.Score)) // TODO: Добавить обработку времени
+		new_msg.ReplyMarkup = keyboard
+
+		bot.Send(new_msg)
+		return
+	}
+
+	var keyboardButtons [][]tgbotapi.KeyboardButton
+	for _, answer := range session.Questions[session.CurrentQuestionIndex].Options {
+		keyboardButtons = append(keyboardButtons,
+			tgbotapi.NewKeyboardButtonRow(tgbotapi.NewKeyboardButton(answer)),
+		)
+	}
+	keyboard := tgbotapi.NewReplyKeyboard(keyboardButtons...)
+
+	new_msg := tgbotapi.NewMessage(msg.Chat.ID, session.Questions[session.CurrentQuestionIndex].Level+"вопрос:\n"+session.Questions[session.CurrentQuestionIndex].Text)
+	new_msg.ReplyMarkup = keyboard
+
+	bot.Send(new_msg)
 }

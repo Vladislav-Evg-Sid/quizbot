@@ -9,3 +9,9 @@ type AllTopicsResponse struct {
 	Success bool            `json:"success"`
 	Topics  []*ActiveTopics `json:"topics"`
 }
+
+type TenQuestionsResponse struct {
+	Success   bool       `json:"success"`
+	Questions []Question `json:"questions"`
+	TopicId   int        `json:"topic_id"`
+}

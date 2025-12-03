@@ -19,7 +19,8 @@ func main() {
 	r := mux.NewRouter()
 
 	// Эндпоинты
-	r.HandleFunc("/api/users/topics", handleAllTopics).Methods("GET") // Получение всех тем викторины
+	r.HandleFunc("/api/users/topics", handleAllTopics).Methods("GET")                               // Получение всех тем викторины
+	r.HandleFunc("/api/player/tenquestions/{topic_name}", handleTenQuestionsByTopic).Methods("GET") // Получение 10 вопросов для викторины
 
 	// Health check
 	r.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +41,7 @@ func handleAllTopics(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if topics == nil {
-		http.Error(w, `{"success": false, "error": "User not found"}`, http.StatusNotFound)
+		http.Error(w, `{"success": false, "error": "Questions not found"}`, http.StatusNotFound)
 		return
 	}
 
@@ -48,5 +49,23 @@ func handleAllTopics(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(models.AllTopicsResponse{
 		Success: true,
 		Topics:  topics,
+	})
+}
+
+func handleTenQuestionsByTopic(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	topicName := vars["topic_name"]
+	questions, topicId, err := database.GetRandomQuestions(topicName)
+	if err != nil {
+		log.Printf("Database error: %v", err)
+		http.Error(w, `{"success": false, "error": "Database error"}`, http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(models.TenQuestionsResponse{
+		Success:   true,
+		Questions: questions,
+		TopicId:   topicId,
 	})
 }
