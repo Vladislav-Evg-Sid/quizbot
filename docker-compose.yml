@@ -77,12 +77,14 @@ services:
     volumes:
       - ./server-player:/app
       - ./server-player/.air.toml:/app/.air.toml
+      - ./.env:/app/.env
     environment:
       - DB_HOST=${POSTGRES_HOST_PLAYER}
       - DB_PORT=${POSTGRES_INTERNAL_PORT_PLAYER}
       - DB_USER=${POSTGRES_USER_PLAYER}
       - DB_PASSWORD=${POSTGRES_PASSWORD_PLAYER}
       - DB_NAME=${POSTGRES_DB_PLAYER}
+      - configPath=${CONFIG_PATH}
     depends_on:
       postgres-player:
         condition: service_healthy

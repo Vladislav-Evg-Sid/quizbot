@@ -1,0 +1,38 @@
+syntax = "proto3";
+package players.service.v1;
+option go_package = "github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/pb/players_api";
+import "models/player_model.proto";
+import "google/api/annotations.proto";
+
+service PlayersService {
+    rpc GetAllTopics (GetAllTopicsRequest) returns (GetAllTopicsResponse) {
+        option (google.api.http) = {
+            get: "/api/users/topics"
+        };
+    }
+    
+    rpc GetTenQuestionsByTopic (GetTenQuestionsByTopicRequest) returns (GetTenQuestionsByTopicResponse) {
+        option (google.api.http) = {
+            get: "/api/player/tenquestions/{topic_name}"
+        };
+    }
+}
+
+message GetAllTopicsRequest {}
+
+message GetAllTopicsResponse {
+    bool success = 1;
+    repeated Topic topics = 2;
+    optional string error = 3;  
+}
+
+message GetTenQuestionsByTopicRequest {
+    string topic_name = 1;
+}
+
+message GetTenQuestionsByTopicResponse {
+    bool success = 1;
+    repeated Question questions = 2;
+    int32 topic_id = 3;
+    optional string error = 4;
+}
