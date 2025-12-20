@@ -7,12 +7,11 @@
 package players_api
 
 import (
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
-
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -60,33 +59,26 @@ func (*Topic) Descriptor() ([]byte, []int) {
 	return file_models_player_model_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Topic) GetId() int32 {
+func (x *Topic) GetId() int64 {
 	if x != nil {
 		return x.Id
 	}
 	return 0
 }
 
-func (x *Topic) GetName() string {
+func (x *Topic) GetTitle() string {
 	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *Topic) GetDescription() string {
-	if x != nil {
-		return x.Description
+		return x.Title
 	}
 	return ""
 }
 
 type Question struct {
 	state              protoimpl.MessageState `protogen:"open.v1"`
-	Id                 int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id                 int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Text               string                 `protobuf:"bytes,2,opt,name=text,proto3" json:"text,omitempty"`
 	Options            []string               `protobuf:"bytes,3,rep,name=options,proto3" json:"options,omitempty"`
-	CorrectAnswerIndex int32                  `protobuf:"varint,4,opt,name=correct_answer_index,json=correctAnswerIndex,proto3" json:"correct_answer_index,omitempty"`
+	CorrectAnswerIndex int64                  `protobuf:"varint,4,opt,name=correct_answer_index,json=correctAnswerIndex,proto3" json:"correct_answer_index,omitempty"`
 	Explanation        string                 `protobuf:"bytes,5,opt,name=explanation,proto3" json:"explanation,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
@@ -122,7 +114,7 @@ func (*Question) Descriptor() ([]byte, []int) {
 	return file_models_player_model_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Question) GetId() int32 {
+func (x *Question) GetId() int64 {
 	if x != nil {
 		return x.Id
 	}
@@ -143,7 +135,7 @@ func (x *Question) GetOptions() []string {
 	return nil
 }
 
-func (x *Question) GetCorrectAnswerIndex() int32 {
+func (x *Question) GetCorrectAnswerIndex() int64 {
 	if x != nil {
 		return x.CorrectAnswerIndex
 	}
@@ -161,16 +153,15 @@ var File_models_player_model_proto protoreflect.FileDescriptor
 
 const file_models_player_model_proto_rawDesc = "" +
 	"\n" +
-	"\x19models/player_model.proto\x12\x12players.service.v1\"M\n" +
+	"\x19models/player_model.proto\x12\x11players.models.v1\"-\n" +
 	"\x05Topic\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
-	"\vdescription\x18\x03 \x01(\tR\vdescription\"\x9c\x01\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\"\x9c\x01\n" +
 	"\bQuestion\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04text\x18\x02 \x01(\tR\x04text\x12\x18\n" +
 	"\aoptions\x18\x03 \x03(\tR\aoptions\x120\n" +
-	"\x14correct_answer_index\x18\x04 \x01(\x05R\x12correctAnswerIndex\x12 \n" +
+	"\x14correct_answer_index\x18\x04 \x01(\x03R\x12correctAnswerIndex\x12 \n" +
 	"\vexplanation\x18\x05 \x01(\tR\vexplanationBLZJgithub.com/Vladislav-Evg-Sid/quizbot/server-player/internal/pb/players_apib\x06proto3"
 
 var (
@@ -187,8 +178,8 @@ func file_models_player_model_proto_rawDescGZIP() []byte {
 
 var file_models_player_model_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_models_player_model_proto_goTypes = []any{
-	(*Topic)(nil),    // 0: players.service.v1.Topic
-	(*Question)(nil), // 1: players.service.v1.Question
+	(*Topic)(nil),    // 0: players.models.v1.Topic
+	(*Question)(nil), // 1: players.models.v1.Question
 }
 var file_models_player_model_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type

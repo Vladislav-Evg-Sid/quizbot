@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/models"
-	proto_models "github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/pb/models"
 	players_api "github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/pb/players_api"
 	"github.com/samber/lo"
 )
@@ -22,9 +21,9 @@ func (s *PlayerServiceAPI) GetAllTopics(ctx context.Context, req *players_api.Ge
 	}, nil
 }
 
-func mapTopicsByResponce(topicsInfo []*models.ActiveTopics) []*proto_models.Topic {
-	return lo.Map(topicsInfo, func(t *models.ActiveTopics, _ int) *proto_models.Topic {
-		return &proto_models.Topic{
+func mapTopicsByResponce(topicsInfo []*models.ActiveTopics) []*players_api.Topic {
+	return lo.Map(topicsInfo, func(t *models.ActiveTopics, _ int) *players_api.Topic {
+		return &players_api.Topic{
 			Id:    t.ID,
 			Title: t.Title,
 		}

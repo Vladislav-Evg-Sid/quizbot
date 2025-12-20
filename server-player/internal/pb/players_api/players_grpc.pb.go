@@ -21,6 +21,8 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	PlayersService_GetAllTopics_FullMethodName           = "/players.service.v1.PlayersService/GetAllTopics"
 	PlayersService_GetTenQuestionsByTopic_FullMethodName = "/players.service.v1.PlayersService/GetTenQuestionsByTopic"
+	PlayersService_GetLeaderboardByTopics_FullMethodName = "/players.service.v1.PlayersService/GetLeaderboardByTopics"
+	PlayersService_SetResultsByQuiz_FullMethodName       = "/players.service.v1.PlayersService/SetResultsByQuiz"
 )
 
 // PlayersServiceClient is the client API for PlayersService service.
@@ -29,6 +31,10 @@ const (
 type PlayersServiceClient interface {
 	GetAllTopics(ctx context.Context, in *GetAllTopicsRequest, opts ...grpc.CallOption) (*GetAllTopicsResponse, error)
 	GetTenQuestionsByTopic(ctx context.Context, in *GetTenQuestionsByTopicRequest, opts ...grpc.CallOption) (*GetTenQuestionsByTopicResponse, error)
+	// ИСПРАВЛЕНО: rpc вместо rps
+	GetLeaderboardByTopics(ctx context.Context, in *GetLeaderboardByTopicsRequest, opts ...grpc.CallOption) (*GetLeaderboardByTopicsResponse, error)
+	// ИСПРАВЛЕНО: rpc вместо rps, option вместо options, закрытая кавычка
+	SetResultsByQuiz(ctx context.Context, in *SetResultsByQuizRequest, opts ...grpc.CallOption) (*SetResultsByQuizResponse, error)
 }
 
 type playersServiceClient struct {
@@ -59,12 +65,36 @@ func (c *playersServiceClient) GetTenQuestionsByTopic(ctx context.Context, in *G
 	return out, nil
 }
 
+func (c *playersServiceClient) GetLeaderboardByTopics(ctx context.Context, in *GetLeaderboardByTopicsRequest, opts ...grpc.CallOption) (*GetLeaderboardByTopicsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetLeaderboardByTopicsResponse)
+	err := c.cc.Invoke(ctx, PlayersService_GetLeaderboardByTopics_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *playersServiceClient) SetResultsByQuiz(ctx context.Context, in *SetResultsByQuizRequest, opts ...grpc.CallOption) (*SetResultsByQuizResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SetResultsByQuizResponse)
+	err := c.cc.Invoke(ctx, PlayersService_SetResultsByQuiz_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PlayersServiceServer is the server API for PlayersService service.
 // All implementations must embed UnimplementedPlayersServiceServer
 // for forward compatibility.
 type PlayersServiceServer interface {
 	GetAllTopics(context.Context, *GetAllTopicsRequest) (*GetAllTopicsResponse, error)
 	GetTenQuestionsByTopic(context.Context, *GetTenQuestionsByTopicRequest) (*GetTenQuestionsByTopicResponse, error)
+	// ИСПРАВЛЕНО: rpc вместо rps
+	GetLeaderboardByTopics(context.Context, *GetLeaderboardByTopicsRequest) (*GetLeaderboardByTopicsResponse, error)
+	// ИСПРАВЛЕНО: rpc вместо rps, option вместо options, закрытая кавычка
+	SetResultsByQuiz(context.Context, *SetResultsByQuizRequest) (*SetResultsByQuizResponse, error)
 	mustEmbedUnimplementedPlayersServiceServer()
 }
 
@@ -80,6 +110,12 @@ func (UnimplementedPlayersServiceServer) GetAllTopics(context.Context, *GetAllTo
 }
 func (UnimplementedPlayersServiceServer) GetTenQuestionsByTopic(context.Context, *GetTenQuestionsByTopicRequest) (*GetTenQuestionsByTopicResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetTenQuestionsByTopic not implemented")
+}
+func (UnimplementedPlayersServiceServer) GetLeaderboardByTopics(context.Context, *GetLeaderboardByTopicsRequest) (*GetLeaderboardByTopicsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetLeaderboardByTopics not implemented")
+}
+func (UnimplementedPlayersServiceServer) SetResultsByQuiz(context.Context, *SetResultsByQuizRequest) (*SetResultsByQuizResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SetResultsByQuiz not implemented")
 }
 func (UnimplementedPlayersServiceServer) mustEmbedUnimplementedPlayersServiceServer() {}
 func (UnimplementedPlayersServiceServer) testEmbeddedByValue()                        {}
@@ -138,6 +174,42 @@ func _PlayersService_GetTenQuestionsByTopic_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PlayersService_GetLeaderboardByTopics_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLeaderboardByTopicsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlayersServiceServer).GetLeaderboardByTopics(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PlayersService_GetLeaderboardByTopics_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlayersServiceServer).GetLeaderboardByTopics(ctx, req.(*GetLeaderboardByTopicsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PlayersService_SetResultsByQuiz_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetResultsByQuizRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PlayersServiceServer).SetResultsByQuiz(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PlayersService_SetResultsByQuiz_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PlayersServiceServer).SetResultsByQuiz(ctx, req.(*SetResultsByQuizRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PlayersService_ServiceDesc is the grpc.ServiceDesc for PlayersService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +224,14 @@ var PlayersService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTenQuestionsByTopic",
 			Handler:    _PlayersService_GetTenQuestionsByTopic_Handler,
+		},
+		{
+			MethodName: "GetLeaderboardByTopics",
+			Handler:    _PlayersService_GetLeaderboardByTopics_Handler,
+		},
+		{
+			MethodName: "SetResultsByQuiz",
+			Handler:    _PlayersService_SetResultsByQuiz_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

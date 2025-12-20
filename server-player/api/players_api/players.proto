@@ -17,15 +17,17 @@ service PlayersService {
         };
     }
 
-    rps GetLeaderboardByTopics (GetLeaderbordByTopicsRequest) returns (GetLeaderbordByTopicsResponse) {
+    // ИСПРАВЛЕНО: rpc вместо rps
+    rpc GetLeaderboardByTopics (GetLeaderboardByTopicsRequest) returns (GetLeaderboardByTopicsResponse) {
         option (google.api.http) = {
-            get "/api/player/topics/{topic_id}/leaderboards"
+            get: "/api/player/topics/{topic_id}/leaderboards"
         };
     }
 
-    rps SetResultsByQuiq (SetResultsByQuiqRequest) returns (SetResultsByQuiqResponse) {
-        options (google.api.http) = {
-            put "/api/player/quiz/finish
+    // ИСПРАВЛЕНО: rpc вместо rps, option вместо options, закрытая кавычка
+    rpc SetResultsByQuiz (SetResultsByQuizRequest) returns (SetResultsByQuizResponse) {
+        option (google.api.http) = {
+            put: "/api/player/quiz/finish"
         };
     }
 }
@@ -43,22 +45,22 @@ message GetTenQuestionsByTopicRequest {
 message GetTenQuestionsByTopicResponse {
     bool success = 1;
     repeated players.models.v1.Question questions = 2;
-    int32 topic_id = 3;
+    int64 topic_id = 3;
     optional string error = 4;
 }
 
-message GetLeaderbordByTopicsRequest {
-
+message GetLeaderboardByTopicsRequest {
+    int64 topic_id = 1;
 }
 
-message GetLeaderbordByTopicsResponse {
-
+message GetLeaderboardByTopicsResponse {
+    
 }
 
-message SetResultsByQuiqRequest {
-
+message SetResultsByQuizRequest {
+    
 }
 
-message SetResultsByQuiqResponse {
-
+message SetResultsByQuizResponse {
+    
 }

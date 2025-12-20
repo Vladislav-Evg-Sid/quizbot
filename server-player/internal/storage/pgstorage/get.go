@@ -19,7 +19,7 @@ func (storage *PGstorage) GetAllTopics(ctx context.Context) ([]*models.ActiveTop
 		return nil, errors.Wrap(err, "quering error")
 	}
 	var topics []*models.ActiveTopics
-	for rows.next() {
+	for rows.Next() {
 		var t models.ActiveTopics
 		if err := rows.Scan(&t.ID, &t.Title); err != nil {
 			return nil, errors.Wrap(err, "failed to scan row")
@@ -32,7 +32,7 @@ func (storage *PGstorage) GetAllTopics(ctx context.Context) ([]*models.ActiveTop
 func (storage *PGstorage) getQuery() squirrel.Sqlizer {
 	q := squirrel.Select(topics_IDColumnName, topics_TitleColumnName).
 		From(topics_tableName).
-		Where(squirrel.Eq(topics_IsActiveColumnName)).
+		Where(squirrel.Eq{topics_IsActiveColumnName: true}).
 		PlaceholderFormat(squirrel.Dollar)
 	return q
 }
