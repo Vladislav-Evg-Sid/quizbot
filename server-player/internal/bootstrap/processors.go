@@ -6,5 +6,5 @@ import (
 )
 
 func InitPlayerInfoProcessor(playerService *playerService.PlayerService) *playerinfoprocessor.PlayerInfoProcessor {
-	return playerinfoprocessor.NewStudentsInfoProcessor(playerService)
+	return playerinfoprocessor.NewPlayersInfoProcessor(playerService)
 }

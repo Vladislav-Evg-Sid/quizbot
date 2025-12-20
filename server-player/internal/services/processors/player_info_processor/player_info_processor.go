@@ -1,13 +1,13 @@
 package playerinfoprocessor
 
-type playerService interface {
+type playerService interface { // TODO: Прописать интерфейс
 }
 
 type PlayerInfoProcessor struct {
 	playerService playerService
 }
 
-func NewStudentsInfoProcessor(playerService playerService) *PlayerInfoProcessor {
+func NewPlayersInfoProcessor(playerService playerService) *PlayerInfoProcessor {
 	return &PlayerInfoProcessor{
 		playerService: playerService,
 	}

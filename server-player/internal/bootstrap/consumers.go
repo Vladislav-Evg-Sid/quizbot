@@ -7,5 +7,7 @@ import (
 )
 
 func InitPlayerInfoUpsertConsumer(cfg *config.Config, playerInfoProcessor *playerinfoprocessor.PlayerInfoProcessor) *playerinfoupsertconsumer.PlayerInfoUpsertConsumer {
+	// TODO: Прописать подключение к кафке
+	// kafkaBrockers := []string{fmt.Sprintf("%v:%v", cfg.Kafka.Host, cfg.Kafka.Port)}
 	return playerinfoupsertconsumer.NewPlayerInfoUpsertConsumer(playerInfoProcessor)
 }

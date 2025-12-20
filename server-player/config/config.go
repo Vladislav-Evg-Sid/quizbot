@@ -20,6 +20,7 @@ type DatabaseConfig struct {
 	SSLMode  string `yaml:"ssl_mode"`
 }
 
+// TODO: Прописать конфиги для кафки
 func LoadConfig(filename string) (*Config, error) {
 	data, err := os.ReadFile(filename)
 	if err != nil {

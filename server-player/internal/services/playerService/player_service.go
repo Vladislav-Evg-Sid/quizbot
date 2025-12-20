@@ -2,10 +2,10 @@ package playerService
 
 import "context"
 
-type PlayerStorage interface {
+type PlayerStorage interface { // TODO: прописать интерфейс для взаимодействия с БД
 }
 
-type PlayerService struct {
+type PlayerService struct { // TODO: Прописать ограничения (например, на длинну имени)
 	playerStorage PlayerStorage
 }
 
