@@ -7,7 +7,7 @@ import "google/api/annotations.proto";
 service PlayersService {
     rpc GetAllTopics (GetAllTopicsRequest) returns (GetAllTopicsResponse) {
         option (google.api.http) = {
-            get: "/api/users/topics"
+            get: "/api/players/topics"
         };
     }
     
@@ -16,14 +16,24 @@ service PlayersService {
             get: "/api/player/tenquestions/{topic_name}"
         };
     }
+
+    rps GetLeaderboardByTopics (GetLeaderbordByTopicsRequest) returns (GetLeaderbordByTopicsResponse) {
+        option (google.api.http) = {
+            get "/api/player/topics/{topic_id}/leaderboards"
+        };
+    }
+
+    rps SetResultsByQuiq (SetResultsByQuiqRequest) returns (SetResultsByQuiqResponse) {
+        options (google.api.http) = {
+            put "/api/player/quiz/finish
+        };
+    }
 }
 
 message GetAllTopicsRequest {}
 
 message GetAllTopicsResponse {
-    bool success = 1;
-    repeated Topic topics = 2;
-    optional string error = 3;  
+    repeated players.models.v1.Topic topics = 1;
 }
 
 message GetTenQuestionsByTopicRequest {
@@ -32,7 +42,23 @@ message GetTenQuestionsByTopicRequest {
 
 message GetTenQuestionsByTopicResponse {
     bool success = 1;
-    repeated Question questions = 2;
+    repeated players.models.v1.Question questions = 2;
     int32 topic_id = 3;
     optional string error = 4;
+}
+
+message GetLeaderbordByTopicsRequest {
+
+}
+
+message GetLeaderbordByTopicsResponse {
+
+}
+
+message SetResultsByQuiqRequest {
+
+}
+
+message SetResultsByQuiqResponse {
+
 }
