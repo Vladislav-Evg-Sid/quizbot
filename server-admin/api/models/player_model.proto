@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package players.models.v1;
+option go_package = "github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/pb/players_api";
+
+message Topic {
+    int64 id = 1;
+    string title = 2;
+}
+
+message Question {
+    string text = 1;
+    repeated string options = 2;
+    int64 correct_index = 3;
+    string level = 4;
+}

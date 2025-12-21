@@ -1,9 +1,10 @@
-package playerinfoprocessor
+package playerserviceapi
 
 import (
 	"context"
 
 	"github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/models"
+	"github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/pb/players_api"
 )
 
 type playerService interface {
@@ -11,12 +12,13 @@ type playerService interface {
 	GetTenQuestionsByTopic(ctx context.Context, topic_name string) ([]*models.Question, int, error)
 }
 
-type PlayerInfoProcessor struct {
+type PlayerServiceAPI struct {
+	players_api.UnimplementedPlayersServiceServer
 	playerService playerService
 }
 
-func NewPlayersInfoProcessor(playerService playerService) *PlayerInfoProcessor {
-	return &PlayerInfoProcessor{
+func NewPlayerServiceAPI(playerService playerService) *PlayerServiceAPI {
+	return &PlayerServiceAPI{
 		playerService: playerService,
 	}
 }

@@ -84,8 +84,10 @@ services:
       - DB_PASSWORD=${POSTGRES_PASSWORD_PLAYER}
       - DB_NAME=${POSTGRES_DB_PLAYER}
       - DB_SSL_MODE=${POSTGRES_SSL_MODE_PLAYER}
+      - SWAGGER_PATH=${SWAGGER_PATH_PLAYER}
+      - SERVICE_REST_PORT=${SERVICE_EXTERNAL_PORT_PLAYER}
+      - SERVICE_GRPC_PORT=${SERVICE_GRPC_PORT_PLAYER}
       - configPath=${CONFIG_PATH_PLAYER}
-      - swaggerPath=${SWAGGER_PATH_PLAYER}
     depends_on:
       postgres-player:
         condition: service_healthy
