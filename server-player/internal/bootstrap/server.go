@@ -10,10 +10,12 @@ import (
 
 	server "github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/api/player_service_api"
 	playerinfoupsertconsumer "github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/consumer/player_Info_upsert_consumer"
+	"github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/pb/players_api"
 	"github.com/go-chi/chi/v5"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func AppRun(api server.PlayerServiceAPI, playerInfoUpsertConsumer *playerinfoupsertconsumer.PlayerInfoUpsertConsumer) {
@@ -23,6 +25,10 @@ func AppRun(api server.PlayerServiceAPI, playerInfoUpsertConsumer *playerinfoups
 			panic(fmt.Errorf("failed to run gRPC server: %v", err))
 		}
 	}()
+
+	if err := runGatewayServer(); err != nil {
+		panic(fmt.Errorf("failed to run gateway server: %v", err))
+	}
 }
 
 func runGRPCServer(api server.PlayerServiceAPI) error {
@@ -32,7 +38,7 @@ func runGRPCServer(api server.PlayerServiceAPI) error {
 	}
 
 	s := grpc.NewServer()
-	// students_api.RegisterStudentsServiceServer(s, &api)
+	players_api.RegisterPlayersServiceServer(s, &api)
 
 	slog.Info("gRPC-server server listening on :50051")
 	return s.Serve(lis)
@@ -58,15 +64,15 @@ func runGatewayServer() error {
 	))
 
 	mux := runtime.NewServeMux()
-	// opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
-	// err := players_api.RegisterStudentsServiceHandlerFromEndpoint(ctx, mux, ":50051", opts)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	err := players_api.RegisterPlayersServiceHandlerFromEndpoint(ctx, mux, ":50051", opts)
+	if err != nil {
+		panic(err)
+	}
 
 	r.Mount("/", mux)
 
-	slog.Info("gRPC-Gateway server listening on :8080")
+	slog.Info("gRPC-Gateway server listening on :8081")
 	return http.ListenAndServe(":8081", r)
 }

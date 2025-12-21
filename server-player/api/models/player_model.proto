@@ -9,9 +9,8 @@ message Topic {
 }
 
 message Question {
-    int64 id = 1;
-    string text = 2;
-    repeated string options = 3;
-    int64 correct_answer_index = 4;
-    string explanation = 5;
+    string text = 1;
+    repeated string options = 2;
+    int64 correct_index = 3;
+    string level = 4;
 }

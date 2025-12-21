@@ -1,7 +1,7 @@
 database:
-  host: ${POSTGRES_HOST_PLAYER}
-  port: ${POSTGRES_EXTERNAL_PORT_PLAYER}
-  username: ${POSTGRES_USER_PLAYER}
-  password: ${POSTGRES_PASSWORD_PLAYER}
-  name: ${POSTGRES_DB_PLAYER}
-  ssl_mode: ${POSTGRES_SSL_MODE_PLAYER}
+  host: ${DB_HOST}
+  port: ${DB_PORT}
+  username: ${DB_USER}
+  password: ${DB_PASSWORD}
+  name: ${DB_NAME}
+  ssl_mode: ${DB_SSL_MODE}

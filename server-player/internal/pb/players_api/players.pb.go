@@ -148,10 +148,8 @@ func (x *GetTenQuestionsByTopicRequest) GetTopicName() string {
 
 type GetTenQuestionsByTopicResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	Questions     []*Question            `protobuf:"bytes,2,rep,name=questions,proto3" json:"questions,omitempty"`
-	TopicId       int64                  `protobuf:"varint,3,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
-	Error         *string                `protobuf:"bytes,4,opt,name=error,proto3,oneof" json:"error,omitempty"`
+	Questions     []*Question            `protobuf:"bytes,1,rep,name=questions,proto3" json:"questions,omitempty"`
+	TopicId       int64                  `protobuf:"varint,2,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -186,13 +184,6 @@ func (*GetTenQuestionsByTopicResponse) Descriptor() ([]byte, []int) {
 	return file_players_api_players_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *GetTenQuestionsByTopicResponse) GetSuccess() bool {
-	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
 func (x *GetTenQuestionsByTopicResponse) GetQuestions() []*Question {
 	if x != nil {
 		return x.Questions
@@ -205,13 +196,6 @@ func (x *GetTenQuestionsByTopicResponse) GetTopicId() int64 {
 		return x.TopicId
 	}
 	return 0
-}
-
-func (x *GetTenQuestionsByTopicResponse) GetError() string {
-	if x != nil && x.Error != nil {
-		return *x.Error
-	}
-	return ""
 }
 
 type GetLeaderboardByTopicsRequest struct {
@@ -376,13 +360,10 @@ const file_players_api_players_proto_rawDesc = "" +
 	"\x06topics\x18\x01 \x03(\v2\x18.players.models.v1.TopicR\x06topics\">\n" +
 	"\x1dGetTenQuestionsByTopicRequest\x12\x1d\n" +
 	"\n" +
-	"topic_name\x18\x01 \x01(\tR\ttopicName\"\xb5\x01\n" +
-	"\x1eGetTenQuestionsByTopicResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess\x129\n" +
-	"\tquestions\x18\x02 \x03(\v2\x1b.players.models.v1.QuestionR\tquestions\x12\x19\n" +
-	"\btopic_id\x18\x03 \x01(\x03R\atopicId\x12\x19\n" +
-	"\x05error\x18\x04 \x01(\tH\x00R\x05error\x88\x01\x01B\b\n" +
-	"\x06_error\":\n" +
+	"topic_name\x18\x01 \x01(\tR\ttopicName\"v\n" +
+	"\x1eGetTenQuestionsByTopicResponse\x129\n" +
+	"\tquestions\x18\x01 \x03(\v2\x1b.players.models.v1.QuestionR\tquestions\x12\x19\n" +
+	"\btopic_id\x18\x02 \x01(\x03R\atopicId\":\n" +
 	"\x1dGetLeaderboardByTopicsRequest\x12\x19\n" +
 	"\btopic_id\x18\x01 \x01(\x03R\atopicId\" \n" +
 	"\x1eGetLeaderboardByTopicsResponse\"\x19\n" +
@@ -443,7 +424,6 @@ func file_players_api_players_proto_init() {
 		return
 	}
 	file_models_player_model_proto_init()
-	file_players_api_players_proto_msgTypes[3].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

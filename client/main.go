@@ -140,7 +140,7 @@ func handleStartCommand(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, adminAPIURL
 }
 
 func handleChooseThemeCommand(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, playerAPIURL string) {
-	resp, err := http.Get(playerAPIURL + "/api/users/topics")
+	resp, err := http.Get(playerAPIURL + "/api/players/topics")
 	if err != nil {
 		log.Printf("Error calling player API: %v", err)
 		bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "❌ Ошибка соединения с сервером"))

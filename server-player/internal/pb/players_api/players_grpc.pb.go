@@ -31,9 +31,7 @@ const (
 type PlayersServiceClient interface {
 	GetAllTopics(ctx context.Context, in *GetAllTopicsRequest, opts ...grpc.CallOption) (*GetAllTopicsResponse, error)
 	GetTenQuestionsByTopic(ctx context.Context, in *GetTenQuestionsByTopicRequest, opts ...grpc.CallOption) (*GetTenQuestionsByTopicResponse, error)
-	// ИСПРАВЛЕНО: rpc вместо rps
 	GetLeaderboardByTopics(ctx context.Context, in *GetLeaderboardByTopicsRequest, opts ...grpc.CallOption) (*GetLeaderboardByTopicsResponse, error)
-	// ИСПРАВЛЕНО: rpc вместо rps, option вместо options, закрытая кавычка
 	SetResultsByQuiz(ctx context.Context, in *SetResultsByQuizRequest, opts ...grpc.CallOption) (*SetResultsByQuizResponse, error)
 }
 
@@ -91,9 +89,7 @@ func (c *playersServiceClient) SetResultsByQuiz(ctx context.Context, in *SetResu
 type PlayersServiceServer interface {
 	GetAllTopics(context.Context, *GetAllTopicsRequest) (*GetAllTopicsResponse, error)
 	GetTenQuestionsByTopic(context.Context, *GetTenQuestionsByTopicRequest) (*GetTenQuestionsByTopicResponse, error)
-	// ИСПРАВЛЕНО: rpc вместо rps
 	GetLeaderboardByTopics(context.Context, *GetLeaderboardByTopicsRequest) (*GetLeaderboardByTopicsResponse, error)
-	// ИСПРАВЛЕНО: rpc вместо rps, option вместо options, закрытая кавычка
 	SetResultsByQuiz(context.Context, *SetResultsByQuizRequest) (*SetResultsByQuizResponse, error)
 	mustEmbedUnimplementedPlayersServiceServer()
 }
