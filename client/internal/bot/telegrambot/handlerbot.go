@@ -1,94 +1,58 @@
-package main
+package telegrambot
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"net/url"
-	"os"
-	"quiz-bot-client/models"
-	"quiz-bot-client/redisclient"
 	"strconv"
 	"strings"
 
+	"github.com/Vladislav-Evg-Sid/quizbot/client/config"
+	"github.com/Vladislav-Evg-Sid/quizbot/client/internal/models"
+	"github.com/Vladislav-Evg-Sid/quizbot/client/internal/storage/redisstorage"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/joho/godotenv"
 )
 
-func main() {
-	// Загружаем .env
-	err := godotenv.Load()
-	if err != nil {
-		panic("Отсутствует .env файл")
+type BotHandler struct {
+	redis *redisstorage.RediStorage
+}
+
+func NewBotHandler(redis *redisstorage.RediStorage) *BotHandler {
+	return &BotHandler{
+		redis: redis,
+	}
+}
+
+func (h *BotHandler) HandleUpdate(tgBot *TelegramBot, update tgbotapi.Update, cfg *config.Config) {
+	if update.Message == nil {
+		return
 	}
 
-	// Получаем токен бота
-	token := os.Getenv("BOT_TOKEN")
-	if token == "" {
-		panic("Требуется токен для бота")
-	}
+	log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 
-	adminAPIURL := os.Getenv("ADMIN_API_URL")
-	if adminAPIURL == "" {
-		panic("Требуется ввессти URL для админского микросервиса")
-	}
-	playerAPIURL := os.Getenv("PLAYER_API_URL")
-	if playerAPIURL == "" {
-		panic("Требуется ввессти URL для игрового микросервиса")
-	}
-
-	// Создаем бота
-	bot, err := tgbotapi.NewBotAPI(token)
-	if err != nil {
-		panic("Невозможно создать бота")
-	}
-
-	err = redisclient.InitRedis()
-	if err != nil {
-		log.Panicf("Инициализация redis не успешна: %v", err)
-		panic("Инициализация redis не успешна")
-	}
-
-	bot.Debug = true
-	log.Printf("Authorized on account %s", bot.Self.UserName)
-
-	// Конфигурируем обновления
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-
-	updates := bot.GetUpdatesChan(u)
-
-	// Обрабатываем сообщения
-	for update := range updates {
-		if update.Message == nil {
-			continue
+	switch {
+	case update.Message.Text == "/start":
+		handleStartCommand(tgBot.Bot, update.Message, cfg.Network.AdminREST)
+	case strings.HasSuffix(strings.ToLower(update.Message.Text), "выбрать тему викторины"):
+		handleChooseThemeCommand(tgBot.Bot, update.Message, cfg.Network.PlayerREST)
+	default:
+		session, err := h.redis.GetUserSession(context.Background(), update.Message.From.ID)
+		if err != nil {
+			log.Printf("Redis error: %v", err)
+			tgBot.Bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "❌ Ошибка сервера"))
+			return
 		}
 
-		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
-		// Проверка возможных входных данных
-		switch {
-		case update.Message.Text == "/start":
-			handleStartCommand(bot, update.Message, adminAPIURL)
-		case strings.HasSuffix(strings.ToLower(update.Message.Text), "выбрать тему викторины"):
-			handleChooseThemeCommand(bot, update.Message, playerAPIURL)
-		default:
-			session, err := redisclient.GetUserSession(update.Message.From.ID)
-			if err != nil {
-				log.Printf("Redis error: %v", err)
-				bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "❌ Ошибка сервера"))
-				continue
-			}
-
-			if session == nil {
-				// Нет игровой сессии: создаём новую
-				handleGetQuestionsForQuiz(bot, update.Message, playerAPIURL)
-			} else {
-				// Есть игровая сессия: продолжаем играть
-				handleProcessAnswer(bot, update.Message, session)
-			}
+		if session == nil {
+			// Нет игровой сессии: создаём новую
+			h.handleGetQuestionsForQuiz(tgBot.Bot, update.Message, cfg.Network.PlayerREST)
+		} else {
+			// Есть игровая сессия: продолжаем играть
+			h.handleProcessAnswer(tgBot.Bot, update.Message, session)
 		}
 	}
 }
@@ -189,7 +153,7 @@ func handleChooseThemeCommand(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, playe
 	}
 }
 
-func handleGetQuestionsForQuiz(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, playerAPIURL string) {
+func (h *BotHandler) handleGetQuestionsForQuiz(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, playerAPIURL string) {
 	topicName := msg.Text
 	parts := strings.SplitN(topicName, ". ", 2)
 
@@ -215,7 +179,7 @@ func handleGetQuestionsForQuiz(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, play
 			return
 		}
 
-		_, err := redisclient.CreateGameSession(msg.From.ID, result.TopicId, result.Questions)
+		_, err := h.redis.CreateGameSession(context.Background(), msg.From.ID, result.TopicId, result.Questions)
 		if err != nil {
 			log.Printf("Error create play session: %v", err)
 			bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "❌ Ошибка создания игровой сессии"))
@@ -245,7 +209,7 @@ func handleGetQuestionsForQuiz(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, play
 	}
 }
 
-func handleProcessAnswer(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, session *models.GameSession) {
+func (h *BotHandler) handleProcessAnswer(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, session *models.GameSession) {
 	hardLevel2Score := map[string]int{
 		"простой": 1,
 		"средний": 2,
@@ -262,14 +226,14 @@ func handleProcessAnswer(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, session *m
 	}
 	session.CurrentQuestionIndex++
 
-	if err := redisclient.UpdateGameSession(session); err != nil {
+	if err := h.redis.UpdateGameSession(context.Background(), session); err != nil {
 		log.Printf("Error update play session: %v", err)
 		bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "❌ Ошибка обновления игровой сессии"))
 		return
 	}
 
 	if session.CurrentQuestionIndex == len(session.Questions) {
-		redisclient.DeleteGameSession(msg.From.ID, session.SessionID)
+		h.redis.DeleteGameSession(context.Background(), msg.From.ID, session.SessionID)
 		// Добавить запись в БД
 
 		keyboard := tgbotapi.NewReplyKeyboard(

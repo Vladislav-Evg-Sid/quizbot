@@ -118,9 +118,15 @@ services:
     env_file:
       - ./.env
     environment:
-      - ADMIN_API_URL=http://server-admin:${SERVICE_EXTERNAL_PORT_ADMIN}
-      - PLAYER_API_URL=http://server-player:${SERVICE_EXTERNAL_PORT_PLAYER}
+      - configPath=${CONFIG_PATH_CLIENT}
+      - BOT_TOKEN=${BOT_TOKEN}
+      - ADMIN_API_REST=http://server-admin:${SERVICE_EXTERNAL_PORT_ADMIN}
+      - PLAYER_API_REST=http://server-player:${SERVICE_EXTERNAL_PORT_PLAYER}
+      - ADMIN_API_GRPC=http://server-admin:${SERVICE_GRPC_PORT_ADMIN}
+      - PLAYER_API_GRPS=http://server-player:${SERVICE_GRPC_PORT_PLAYER}
       - REDIS_URL=quiz-redis:${REDIS_EXTERNAL_PORT}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DATABASE=${REDIS_DATABASE}
     networks:
       - client-admin-network
       - client-player-network
