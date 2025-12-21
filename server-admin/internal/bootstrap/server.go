@@ -9,10 +9,10 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/Vladislav-Evg-Sid/quizbot/server-player/config"
-	server "github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/api/player_service_api"
-	playerinfoupsertconsumer "github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/consumer/player_Info_upsert_consumer"
-	"github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/pb/players_api"
+	"github.com/Vladislav-Evg-Sid/quizbot/server-admin/config"
+	server "github.com/Vladislav-Evg-Sid/quizbot/server-admin/internal/api/admin_service_api"
+	admininfoupsertconsumer "github.com/Vladislav-Evg-Sid/quizbot/server-admin/internal/consumer/admin_Info_upsert_consumer"
+	"github.com/Vladislav-Evg-Sid/quizbot/server-admin/internal/pb/admins_api"
 	"github.com/go-chi/chi/v5"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	httpSwagger "github.com/swaggo/http-swagger"
@@ -20,8 +20,8 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-func AppRun(api server.PlayerServiceAPI, playerInfoUpsertConsumer *playerinfoupsertconsumer.PlayerInfoUpsertConsumer, cfg *config.Config) {
-	go playerInfoUpsertConsumer.Consume(context.Background())
+func AppRun(api server.AdminServiceAPI, adminInfoUpsertConsumer *admininfoupsertconsumer.AdminInfoUpsertConsumer, cfg *config.Config) {
+	go adminInfoUpsertConsumer.Consume(context.Background())
 	go func() {
 		if err := runGRPCServer(api, cfg); err != nil {
 			panic(fmt.Errorf("failed to run gRPC server: %v", err))
@@ -33,14 +33,14 @@ func AppRun(api server.PlayerServiceAPI, playerInfoUpsertConsumer *playerinfoups
 	}
 }
 
-func runGRPCServer(api server.PlayerServiceAPI, cfg *config.Config) error {
+func runGRPCServer(api server.AdminServiceAPI, cfg *config.Config) error {
 	lis, err := net.Listen("tcp", ":"+strconv.Itoa(cfg.Service.GRPCPort))
 	if err != nil {
 		return err
 	}
 
 	s := grpc.NewServer()
-	players_api.RegisterPlayersServiceServer(s, &api)
+	admins_api.RegisterAdminsServiceServer(s, &api)
 
 	slog.Info("gRPC-server server listening on :" + strconv.Itoa(cfg.Service.GRPCPort))
 	return s.Serve(lis)
@@ -68,7 +68,7 @@ func runGatewayServer(cfg *config.Config) error {
 	mux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
 
-	err := players_api.RegisterPlayersServiceHandlerFromEndpoint(ctx, mux, ":"+strconv.Itoa(cfg.Service.GRPCPort), opts)
+	err := admins_api.RegisterAdminsServiceHandlerFromEndpoint(ctx, mux, ":"+strconv.Itoa(cfg.Service.GRPCPort), opts)
 	if err != nil {
 		panic(err)
 	}

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/Vladislav-Evg-Sid/quizbot/server-player/config"
-	"github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/storage/pgstorage"
+	"github.com/Vladislav-Evg-Sid/quizbot/server-admin/config"
+	"github.com/Vladislav-Evg-Sid/quizbot/server-admin/internal/storage/pgstorage"
 )
 
 func InitPGStorage(cfg *config.Config) *pgstorage.PGstorage {

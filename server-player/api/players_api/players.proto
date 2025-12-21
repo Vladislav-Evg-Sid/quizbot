@@ -5,25 +5,25 @@ import "models/player_model.proto";
 import "google/api/annotations.proto";
 
 service PlayersService {
-    rpc GetAllTopics (GetAllTopicsRequest) returns (GetAllTopicsResponse) {
+    rpc GetAllTopics (GetAllTopicsRequest) returns (GetAllTopicsResponce) {
         option (google.api.http) = {
             get: "/api/players/topics"
         };
     }
     
-    rpc GetTenQuestionsByTopic (GetTenQuestionsByTopicRequest) returns (GetTenQuestionsByTopicResponse) {
+    rpc GetTenQuestionsByTopic (GetTenQuestionsByTopicRequest) returns (GetTenQuestionsByTopicResponce) {
         option (google.api.http) = {
             get: "/api/player/tenquestions/{topic_name}"
         };
     }
     
-    rpc GetLeaderboardByTopics (GetLeaderboardByTopicsRequest) returns (GetLeaderboardByTopicsResponse) {
+    rpc GetLeaderboardByTopics (GetLeaderboardByTopicsRequest) returns (GetLeaderboardByTopicsResponce) {
         option (google.api.http) = {
             get: "/api/player/topics/{topic_id}/leaderboards"
         };
     }
     
-    rpc SetResultsByQuiz (SetResultsByQuizRequest) returns (SetResultsByQuizResponse) {
+    rpc SetResultsByQuiz (SetResultsByQuizRequest) returns (SetResultsByQuizResponce) {
         option (google.api.http) = {
             put: "/api/player/quiz/finish"
         };
@@ -32,7 +32,7 @@ service PlayersService {
 
 message GetAllTopicsRequest {}
 
-message GetAllTopicsResponse {
+message GetAllTopicsResponce {
     repeated players.models.v1.Topic topics = 1;
 }
 
@@ -40,7 +40,7 @@ message GetTenQuestionsByTopicRequest {
     string topic_name = 1;
 }
 
-message GetTenQuestionsByTopicResponse {
+message GetTenQuestionsByTopicResponce {
     repeated players.models.v1.Question questions = 1;
     int64 topic_id = 2;
 }
@@ -49,7 +49,7 @@ message GetLeaderboardByTopicsRequest {
     int64 topic_id = 1;
 }
 
-message GetLeaderboardByTopicsResponse {
+message GetLeaderboardByTopicsResponce {
     
 }
 
@@ -57,6 +57,6 @@ message SetResultsByQuizRequest {
     
 }
 
-message SetResultsByQuizResponse {
+message SetResultsByQuizResponce {
     
 }

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package admins.models.v1;
+option go_package = "github.com/Vladislav-Evg-Sid/quizbot/server-admin/internal/pb/admins_api";
+
+message User {
+    int64 id = 1;
+    int64 telegram_id = 2;
+    string name = 3;
+    string username = 4;
+    bool is_admin = 5;
+}

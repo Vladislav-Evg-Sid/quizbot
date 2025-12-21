@@ -1,0 +1,24 @@
+syntax = "proto3";
+package admins.service.v1;
+option go_package = "github.com/Vladislav-Evg-Sid/quizbot/server-admin/internal/pb/admins_api";
+import "models/admin_model.proto";
+import "google/api/annotations.proto";
+
+service AdminsService {
+    rpc SetUserData (SetUserDataRequest) returns (SetUserDataResponce) {
+        option (google.api.http) = {
+            post: "/api/users/start"
+            body: "*"
+        };
+    }
+}
+
+message SetUserDataRequest {
+    int64 telegram_id = 1;
+    string name = 2;
+    string username = 3;
+}
+
+message SetUserDataResponce {
+    admins.models.v1.User user = 1;
+}

@@ -69,7 +69,6 @@ func main() {
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 
 		// Проверка возможных входных данных
-		fmt.Println("********", update.Message.Text)
 		switch {
 		case update.Message.Text == "/start":
 			handleStartCommand(bot, update.Message, adminAPIURL)
@@ -113,7 +112,8 @@ func handleStartCommand(bot *tgbotapi.BotAPI, msg *tgbotapi.Message, adminAPIURL
 
 	if resp.StatusCode == http.StatusOK {
 		var result models.StartResponse
-		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		err := json.NewDecoder(resp.Body).Decode(&result)
+		if err != nil {
 			bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "❌ Ошибка обработки ответа"))
 			return
 		}

@@ -9,8 +9,8 @@ type StartRequest struct {
 type StartResponse struct {
 	Success bool `json:"success"`
 	User    struct {
-		ID         int64  `json:"id"`
-		TelegramID int64  `json:"telegram_id"`
+		ID         string `json:"id"`
+		TelegramID string `json:"telegram_id"`
 		Name       string `json:"name"`
 		Username   string `json:"username"`
 		IsAdmin    bool   `json:"is_admin"`

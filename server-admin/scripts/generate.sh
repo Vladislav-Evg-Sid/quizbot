@@ -25,7 +25,7 @@ protoc -I ./api \
   --go_out=./internal/pb --go_opt=paths=source_relative \
   --plugin=protoc-gen-go-grpc="${PROTOC_GEN_GO_GRPC}" \
   --go-grpc_out=./internal/pb --go-grpc_opt=paths=source_relative \
-  ./api/players_api/players.proto ./api/models/player_model.proto
+  ./api/admins_api/admins.proto ./api/models/admin_model.proto
 
 # 2. Генерация gRPC-Gateway (если используете)
 protoc -I ./api \
@@ -34,7 +34,7 @@ protoc -I ./api \
   --grpc-gateway_out=./internal/pb \
   --grpc-gateway_opt=paths=source_relative \
   --grpc-gateway_opt=logtostderr=true \
-  ./api/players_api/players.proto
+  ./api/admins_api/admins.proto
 
 # 3. Генерация OpenAPI (если используете)
 protoc -I ./api \
@@ -42,7 +42,7 @@ protoc -I ./api \
   --plugin=protoc-gen-openapiv2="${PROTOC_GEN_OPENAPI}" \
   --openapiv2_out=./internal/pb/swagger \
   --openapiv2_opt=logtostderr=true \
-  ./api/players_api/players.proto
+  ./api/admins_api/admins.proto
 
 echo ""
 echo "Generation completed!"

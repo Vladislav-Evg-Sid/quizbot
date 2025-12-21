@@ -1,4 +1,4 @@
-module github.com/Vladislav-Evg-Sid/quizbot/server-player
+module github.com/Vladislav-Evg-Sid/quizbot/server-admin
 
 go 1.25.2
 

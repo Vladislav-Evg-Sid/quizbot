@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Vladislav-Evg-Sid/quizbot/server-player/config"
-	"github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/bootstrap"
+	"github.com/Vladislav-Evg-Sid/quizbot/server-admin/config"
+	"github.com/Vladislav-Evg-Sid/quizbot/server-admin/internal/bootstrap"
 )
 
 func main() {
@@ -14,11 +14,11 @@ func main() {
 		panic(fmt.Sprintf("ошибка парсинга конфига: %v", err))
 	}
 
-	playerStorage := bootstrap.InitPGStorage(cfg)
-	playerService := bootstrap.InitPlayerService(playerStorage, cfg)
-	playerInfoProcessor := bootstrap.InitPlayerInfoProcessor(playerService)
-	playerInfoUpsertConsumer := bootstrap.InitPlayerInfoUpsertConsumer(cfg, playerInfoProcessor)
-	playerAPI := bootstrap.InitPlayerServiceAPI(playerService)
+	adminStorage := bootstrap.InitPGStorage(cfg)
+	adminService := bootstrap.InitAdminService(adminStorage, cfg)
+	adminInfoProcessor := bootstrap.InitAdminInfoProcessor(adminService)
+	adminInfoUpsertConsumer := bootstrap.InitAdminInfoUpsertConsumer(cfg, adminInfoProcessor)
+	adminAPI := bootstrap.InitAdminServiceAPI(adminService)
 
-	bootstrap.AppRun(*playerAPI, playerInfoUpsertConsumer, cfg)
+	bootstrap.AppRun(*adminAPI, adminInfoUpsertConsumer, cfg)
 }

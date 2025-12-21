@@ -1,10 +1,10 @@
 package bootstrap
 
 import (
-	"github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/services/playerService"
-	playerinfoprocessor "github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/services/processors/player_info_processor"
+	"github.com/Vladislav-Evg-Sid/quizbot/server-admin/internal/services/adminService"
+	admininfoprocessor "github.com/Vladislav-Evg-Sid/quizbot/server-admin/internal/services/processors/admin_info_processor"
 )
 
-func InitPlayerInfoProcessor(playerService *playerService.PlayerService) *playerinfoprocessor.PlayerInfoProcessor {
-	return playerinfoprocessor.NewPlayersInfoProcessor(playerService)
+func InitAdminInfoProcessor(adminService *adminService.AdminService) *admininfoprocessor.AdminInfoProcessor {
+	return admininfoprocessor.NewAdminsInfoProcessor(adminService)
 }

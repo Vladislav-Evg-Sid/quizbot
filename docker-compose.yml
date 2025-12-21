@@ -39,6 +39,11 @@ services:
       - DB_USER=${POSTGRES_USER_ADMIN}
       - DB_PASSWORD=${POSTGRES_PASSWORD_ADMIN}
       - DB_NAME=${POSTGRES_DB_ADMIN}
+      - DB_SSL_MODE=${POSTGRES_SSL_MODE_ADMIN}
+      - SWAGGER_PATH=${SWAGGER_PATH_ADMIN}
+      - SERVICE_REST_PORT=${SERVICE_EXTERNAL_PORT_ADMIN}
+      - SERVICE_GRPC_PORT=${SERVICE_GRPC_PORT_ADMIN}
+      - configPath=${CONFIG_PATH_ADMIN}
     depends_on:
       postgres-admin:
         condition: service_healthy
