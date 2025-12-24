@@ -10,3 +10,8 @@ service:
   grpc_port: ${SERVICE_GRPC_PORT}
   rest_port: ${SERVICE_REST_PORT}
   swagger_path: ${SWAGGER_PATH}
+
+kafka:
+  host: ${KAFKA_HOST}
+  port: ${KAFKA_PORT}
+  topic_name_add_quiz_results: ${KAFKA_TOPIC_ADD_QUIZ_RESULT}

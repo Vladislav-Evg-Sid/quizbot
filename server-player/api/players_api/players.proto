@@ -7,19 +7,13 @@ import "google/api/annotations.proto";
 service PlayersService {
     rpc GetAllTopics (GetAllTopicsRequest) returns (GetAllTopicsResponce) {
         option (google.api.http) = {
-            get: "/api/players/topics"
+            get: "/api/users/topics"
         };
     }
     
     rpc GetTenQuestionsByTopic (GetTenQuestionsByTopicRequest) returns (GetTenQuestionsByTopicResponce) {
         option (google.api.http) = {
             get: "/api/player/tenquestions/{topic_name}"
-        };
-    }
-    
-    rpc GetLeaderboardByTopics (GetLeaderboardByTopicsRequest) returns (GetLeaderboardByTopicsResponce) {
-        option (google.api.http) = {
-            get: "/api/player/topics/{topic_id}/leaderboards"
         };
     }
     
@@ -45,16 +39,11 @@ message GetTenQuestionsByTopicResponce {
     int64 topic_id = 2;
 }
 
-message GetLeaderboardByTopicsRequest {
-    int64 topic_id = 1;
-}
-
-message GetLeaderboardByTopicsResponce {
-    
-}
-
 message SetResultsByQuizRequest {
-    
+    int64 tg_id = 1;
+    int32 thema_id = 2;
+    int32 score = 3;
+    int32 time =4;
 }
 
 message SetResultsByQuizResponce {

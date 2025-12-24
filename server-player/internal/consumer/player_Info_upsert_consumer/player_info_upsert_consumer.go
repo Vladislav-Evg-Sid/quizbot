@@ -1,6 +1,6 @@
 package playerinfoupsertconsumer
 
-type playerInfoProcessor interface { // TODO: Прописать интерфейс
+type playerInfoProcessor interface {
 }
 
 type PlayerInfoUpsertConsumer struct {

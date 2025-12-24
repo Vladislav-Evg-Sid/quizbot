@@ -58,27 +58,27 @@ func (*GetAllTopicsRequest) Descriptor() ([]byte, []int) {
 	return file_players_api_players_proto_rawDescGZIP(), []int{0}
 }
 
-type GetAllTopicsResponse struct {
+type GetAllTopicsResponce struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Topics        []*Topic               `protobuf:"bytes,1,rep,name=topics,proto3" json:"topics,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetAllTopicsResponse) Reset() {
-	*x = GetAllTopicsResponse{}
+func (x *GetAllTopicsResponce) Reset() {
+	*x = GetAllTopicsResponce{}
 	mi := &file_players_api_players_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetAllTopicsResponse) String() string {
+func (x *GetAllTopicsResponce) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetAllTopicsResponse) ProtoMessage() {}
+func (*GetAllTopicsResponce) ProtoMessage() {}
 
-func (x *GetAllTopicsResponse) ProtoReflect() protoreflect.Message {
+func (x *GetAllTopicsResponce) ProtoReflect() protoreflect.Message {
 	mi := &file_players_api_players_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -90,12 +90,12 @@ func (x *GetAllTopicsResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetAllTopicsResponse.ProtoReflect.Descriptor instead.
-func (*GetAllTopicsResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetAllTopicsResponce.ProtoReflect.Descriptor instead.
+func (*GetAllTopicsResponce) Descriptor() ([]byte, []int) {
 	return file_players_api_players_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GetAllTopicsResponse) GetTopics() []*Topic {
+func (x *GetAllTopicsResponce) GetTopics() []*Topic {
 	if x != nil {
 		return x.Topics
 	}
@@ -146,7 +146,7 @@ func (x *GetTenQuestionsByTopicRequest) GetTopicName() string {
 	return ""
 }
 
-type GetTenQuestionsByTopicResponse struct {
+type GetTenQuestionsByTopicResponce struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Questions     []*Question            `protobuf:"bytes,1,rep,name=questions,proto3" json:"questions,omitempty"`
 	TopicId       int64                  `protobuf:"varint,2,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
@@ -154,20 +154,20 @@ type GetTenQuestionsByTopicResponse struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetTenQuestionsByTopicResponse) Reset() {
-	*x = GetTenQuestionsByTopicResponse{}
+func (x *GetTenQuestionsByTopicResponce) Reset() {
+	*x = GetTenQuestionsByTopicResponce{}
 	mi := &file_players_api_players_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetTenQuestionsByTopicResponse) String() string {
+func (x *GetTenQuestionsByTopicResponce) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetTenQuestionsByTopicResponse) ProtoMessage() {}
+func (*GetTenQuestionsByTopicResponce) ProtoMessage() {}
 
-func (x *GetTenQuestionsByTopicResponse) ProtoReflect() protoreflect.Message {
+func (x *GetTenQuestionsByTopicResponce) ProtoReflect() protoreflect.Message {
 	mi := &file_players_api_players_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -179,114 +179,38 @@ func (x *GetTenQuestionsByTopicResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetTenQuestionsByTopicResponse.ProtoReflect.Descriptor instead.
-func (*GetTenQuestionsByTopicResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetTenQuestionsByTopicResponce.ProtoReflect.Descriptor instead.
+func (*GetTenQuestionsByTopicResponce) Descriptor() ([]byte, []int) {
 	return file_players_api_players_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *GetTenQuestionsByTopicResponse) GetQuestions() []*Question {
+func (x *GetTenQuestionsByTopicResponce) GetQuestions() []*Question {
 	if x != nil {
 		return x.Questions
 	}
 	return nil
 }
 
-func (x *GetTenQuestionsByTopicResponse) GetTopicId() int64 {
+func (x *GetTenQuestionsByTopicResponce) GetTopicId() int64 {
 	if x != nil {
 		return x.TopicId
 	}
 	return 0
-}
-
-type GetLeaderboardByTopicsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	TopicId       int64                  `protobuf:"varint,1,opt,name=topic_id,json=topicId,proto3" json:"topic_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetLeaderboardByTopicsRequest) Reset() {
-	*x = GetLeaderboardByTopicsRequest{}
-	mi := &file_players_api_players_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetLeaderboardByTopicsRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetLeaderboardByTopicsRequest) ProtoMessage() {}
-
-func (x *GetLeaderboardByTopicsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_players_api_players_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetLeaderboardByTopicsRequest.ProtoReflect.Descriptor instead.
-func (*GetLeaderboardByTopicsRequest) Descriptor() ([]byte, []int) {
-	return file_players_api_players_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *GetLeaderboardByTopicsRequest) GetTopicId() int64 {
-	if x != nil {
-		return x.TopicId
-	}
-	return 0
-}
-
-type GetLeaderboardByTopicsResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetLeaderboardByTopicsResponse) Reset() {
-	*x = GetLeaderboardByTopicsResponse{}
-	mi := &file_players_api_players_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetLeaderboardByTopicsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetLeaderboardByTopicsResponse) ProtoMessage() {}
-
-func (x *GetLeaderboardByTopicsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_players_api_players_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetLeaderboardByTopicsResponse.ProtoReflect.Descriptor instead.
-func (*GetLeaderboardByTopicsResponse) Descriptor() ([]byte, []int) {
-	return file_players_api_players_proto_rawDescGZIP(), []int{5}
 }
 
 type SetResultsByQuizRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	TgId          int64                  `protobuf:"varint,1,opt,name=tg_id,json=tgId,proto3" json:"tg_id,omitempty"`
+	ThemaId       int32                  `protobuf:"varint,2,opt,name=thema_id,json=themaId,proto3" json:"thema_id,omitempty"`
+	Score         int32                  `protobuf:"varint,3,opt,name=score,proto3" json:"score,omitempty"`
+	Time          int32                  `protobuf:"varint,4,opt,name=time,proto3" json:"time,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *SetResultsByQuizRequest) Reset() {
 	*x = SetResultsByQuizRequest{}
-	mi := &file_players_api_players_proto_msgTypes[6]
+	mi := &file_players_api_players_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -298,7 +222,7 @@ func (x *SetResultsByQuizRequest) String() string {
 func (*SetResultsByQuizRequest) ProtoMessage() {}
 
 func (x *SetResultsByQuizRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_players_api_players_proto_msgTypes[6]
+	mi := &file_players_api_players_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -311,30 +235,58 @@ func (x *SetResultsByQuizRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetResultsByQuizRequest.ProtoReflect.Descriptor instead.
 func (*SetResultsByQuizRequest) Descriptor() ([]byte, []int) {
-	return file_players_api_players_proto_rawDescGZIP(), []int{6}
+	return file_players_api_players_proto_rawDescGZIP(), []int{4}
 }
 
-type SetResultsByQuizResponse struct {
+func (x *SetResultsByQuizRequest) GetTgId() int64 {
+	if x != nil {
+		return x.TgId
+	}
+	return 0
+}
+
+func (x *SetResultsByQuizRequest) GetThemaId() int32 {
+	if x != nil {
+		return x.ThemaId
+	}
+	return 0
+}
+
+func (x *SetResultsByQuizRequest) GetScore() int32 {
+	if x != nil {
+		return x.Score
+	}
+	return 0
+}
+
+func (x *SetResultsByQuizRequest) GetTime() int32 {
+	if x != nil {
+		return x.Time
+	}
+	return 0
+}
+
+type SetResultsByQuizResponce struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *SetResultsByQuizResponse) Reset() {
-	*x = SetResultsByQuizResponse{}
-	mi := &file_players_api_players_proto_msgTypes[7]
+func (x *SetResultsByQuizResponce) Reset() {
+	*x = SetResultsByQuizResponce{}
+	mi := &file_players_api_players_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *SetResultsByQuizResponse) String() string {
+func (x *SetResultsByQuizResponce) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SetResultsByQuizResponse) ProtoMessage() {}
+func (*SetResultsByQuizResponce) ProtoMessage() {}
 
-func (x *SetResultsByQuizResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_players_api_players_proto_msgTypes[7]
+func (x *SetResultsByQuizResponce) ProtoReflect() protoreflect.Message {
+	mi := &file_players_api_players_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -345,9 +297,9 @@ func (x *SetResultsByQuizResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SetResultsByQuizResponse.ProtoReflect.Descriptor instead.
-func (*SetResultsByQuizResponse) Descriptor() ([]byte, []int) {
-	return file_players_api_players_proto_rawDescGZIP(), []int{7}
+// Deprecated: Use SetResultsByQuizResponce.ProtoReflect.Descriptor instead.
+func (*SetResultsByQuizResponce) Descriptor() ([]byte, []int) {
+	return file_players_api_players_proto_rawDescGZIP(), []int{5}
 }
 
 var File_players_api_players_proto protoreflect.FileDescriptor
@@ -356,24 +308,24 @@ const file_players_api_players_proto_rawDesc = "" +
 	"\n" +
 	"\x19players_api/players.proto\x12\x12players.service.v1\x1a\x19models/player_model.proto\x1a\x1cgoogle/api/annotations.proto\"\x15\n" +
 	"\x13GetAllTopicsRequest\"H\n" +
-	"\x14GetAllTopicsResponse\x120\n" +
+	"\x14GetAllTopicsResponce\x120\n" +
 	"\x06topics\x18\x01 \x03(\v2\x18.players.models.v1.TopicR\x06topics\">\n" +
 	"\x1dGetTenQuestionsByTopicRequest\x12\x1d\n" +
 	"\n" +
 	"topic_name\x18\x01 \x01(\tR\ttopicName\"v\n" +
-	"\x1eGetTenQuestionsByTopicResponse\x129\n" +
+	"\x1eGetTenQuestionsByTopicResponce\x129\n" +
 	"\tquestions\x18\x01 \x03(\v2\x1b.players.models.v1.QuestionR\tquestions\x12\x19\n" +
-	"\btopic_id\x18\x02 \x01(\x03R\atopicId\":\n" +
-	"\x1dGetLeaderboardByTopicsRequest\x12\x19\n" +
-	"\btopic_id\x18\x01 \x01(\x03R\atopicId\" \n" +
-	"\x1eGetLeaderboardByTopicsResponse\"\x19\n" +
-	"\x17SetResultsByQuizRequest\"\x1a\n" +
-	"\x18SetResultsByQuizResponse2\x88\x05\n" +
-	"\x0ePlayersService\x12~\n" +
-	"\fGetAllTopics\x12'.players.service.v1.GetAllTopicsRequest\x1a(.players.service.v1.GetAllTopicsResponse\"\x1b\x82\xd3\xe4\x93\x02\x15\x12\x13/api/players/topics\x12\xae\x01\n" +
-	"\x16GetTenQuestionsByTopic\x121.players.service.v1.GetTenQuestionsByTopicRequest\x1a2.players.service.v1.GetTenQuestionsByTopicResponse\"-\x82\xd3\xe4\x93\x02'\x12%/api/player/tenquestions/{topic_name}\x12\xb3\x01\n" +
-	"\x16GetLeaderboardByTopics\x121.players.service.v1.GetLeaderboardByTopicsRequest\x1a2.players.service.v1.GetLeaderboardByTopicsResponse\"2\x82\xd3\xe4\x93\x02,\x12*/api/player/topics/{topic_id}/leaderboards\x12\x8e\x01\n" +
-	"\x10SetResultsByQuiz\x12+.players.service.v1.SetResultsByQuizRequest\x1a,.players.service.v1.SetResultsByQuizResponse\"\x1f\x82\xd3\xe4\x93\x02\x19\x1a\x17/api/player/quiz/finishBLZJgithub.com/Vladislav-Evg-Sid/quizbot/server-player/internal/pb/players_apib\x06proto3"
+	"\btopic_id\x18\x02 \x01(\x03R\atopicId\"s\n" +
+	"\x17SetResultsByQuizRequest\x12\x13\n" +
+	"\x05tg_id\x18\x01 \x01(\x03R\x04tgId\x12\x19\n" +
+	"\bthema_id\x18\x02 \x01(\x05R\athemaId\x12\x14\n" +
+	"\x05score\x18\x03 \x01(\x05R\x05score\x12\x12\n" +
+	"\x04time\x18\x04 \x01(\x05R\x04time\"\x1a\n" +
+	"\x18SetResultsByQuizResponce2\xd0\x03\n" +
+	"\x0ePlayersService\x12|\n" +
+	"\fGetAllTopics\x12'.players.service.v1.GetAllTopicsRequest\x1a(.players.service.v1.GetAllTopicsResponce\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/api/users/topics\x12\xae\x01\n" +
+	"\x16GetTenQuestionsByTopic\x121.players.service.v1.GetTenQuestionsByTopicRequest\x1a2.players.service.v1.GetTenQuestionsByTopicResponce\"-\x82\xd3\xe4\x93\x02'\x12%/api/player/tenquestions/{topic_name}\x12\x8e\x01\n" +
+	"\x10SetResultsByQuiz\x12+.players.service.v1.SetResultsByQuizRequest\x1a,.players.service.v1.SetResultsByQuizResponce\"\x1f\x82\xd3\xe4\x93\x02\x19\x1a\x17/api/player/quiz/finishBLZJgithub.com/Vladislav-Evg-Sid/quizbot/server-player/internal/pb/players_apib\x06proto3"
 
 var (
 	file_players_api_players_proto_rawDescOnce sync.Once
@@ -387,32 +339,28 @@ func file_players_api_players_proto_rawDescGZIP() []byte {
 	return file_players_api_players_proto_rawDescData
 }
 
-var file_players_api_players_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_players_api_players_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_players_api_players_proto_goTypes = []any{
 	(*GetAllTopicsRequest)(nil),            // 0: players.service.v1.GetAllTopicsRequest
-	(*GetAllTopicsResponse)(nil),           // 1: players.service.v1.GetAllTopicsResponse
+	(*GetAllTopicsResponce)(nil),           // 1: players.service.v1.GetAllTopicsResponce
 	(*GetTenQuestionsByTopicRequest)(nil),  // 2: players.service.v1.GetTenQuestionsByTopicRequest
-	(*GetTenQuestionsByTopicResponse)(nil), // 3: players.service.v1.GetTenQuestionsByTopicResponse
-	(*GetLeaderboardByTopicsRequest)(nil),  // 4: players.service.v1.GetLeaderboardByTopicsRequest
-	(*GetLeaderboardByTopicsResponse)(nil), // 5: players.service.v1.GetLeaderboardByTopicsResponse
-	(*SetResultsByQuizRequest)(nil),        // 6: players.service.v1.SetResultsByQuizRequest
-	(*SetResultsByQuizResponse)(nil),       // 7: players.service.v1.SetResultsByQuizResponse
-	(*Topic)(nil),                          // 8: players.models.v1.Topic
-	(*Question)(nil),                       // 9: players.models.v1.Question
+	(*GetTenQuestionsByTopicResponce)(nil), // 3: players.service.v1.GetTenQuestionsByTopicResponce
+	(*SetResultsByQuizRequest)(nil),        // 4: players.service.v1.SetResultsByQuizRequest
+	(*SetResultsByQuizResponce)(nil),       // 5: players.service.v1.SetResultsByQuizResponce
+	(*Topic)(nil),                          // 6: players.models.v1.Topic
+	(*Question)(nil),                       // 7: players.models.v1.Question
 }
 var file_players_api_players_proto_depIdxs = []int32{
-	8, // 0: players.service.v1.GetAllTopicsResponse.topics:type_name -> players.models.v1.Topic
-	9, // 1: players.service.v1.GetTenQuestionsByTopicResponse.questions:type_name -> players.models.v1.Question
+	6, // 0: players.service.v1.GetAllTopicsResponce.topics:type_name -> players.models.v1.Topic
+	7, // 1: players.service.v1.GetTenQuestionsByTopicResponce.questions:type_name -> players.models.v1.Question
 	0, // 2: players.service.v1.PlayersService.GetAllTopics:input_type -> players.service.v1.GetAllTopicsRequest
 	2, // 3: players.service.v1.PlayersService.GetTenQuestionsByTopic:input_type -> players.service.v1.GetTenQuestionsByTopicRequest
-	4, // 4: players.service.v1.PlayersService.GetLeaderboardByTopics:input_type -> players.service.v1.GetLeaderboardByTopicsRequest
-	6, // 5: players.service.v1.PlayersService.SetResultsByQuiz:input_type -> players.service.v1.SetResultsByQuizRequest
-	1, // 6: players.service.v1.PlayersService.GetAllTopics:output_type -> players.service.v1.GetAllTopicsResponse
-	3, // 7: players.service.v1.PlayersService.GetTenQuestionsByTopic:output_type -> players.service.v1.GetTenQuestionsByTopicResponse
-	5, // 8: players.service.v1.PlayersService.GetLeaderboardByTopics:output_type -> players.service.v1.GetLeaderboardByTopicsResponse
-	7, // 9: players.service.v1.PlayersService.SetResultsByQuiz:output_type -> players.service.v1.SetResultsByQuizResponse
-	6, // [6:10] is the sub-list for method output_type
-	2, // [2:6] is the sub-list for method input_type
+	4, // 4: players.service.v1.PlayersService.SetResultsByQuiz:input_type -> players.service.v1.SetResultsByQuizRequest
+	1, // 5: players.service.v1.PlayersService.GetAllTopics:output_type -> players.service.v1.GetAllTopicsResponce
+	3, // 6: players.service.v1.PlayersService.GetTenQuestionsByTopic:output_type -> players.service.v1.GetTenQuestionsByTopicResponce
+	5, // 7: players.service.v1.PlayersService.SetResultsByQuiz:output_type -> players.service.v1.SetResultsByQuizResponce
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
@@ -430,7 +378,7 @@ func file_players_api_players_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_players_api_players_proto_rawDesc), len(file_players_api_players_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

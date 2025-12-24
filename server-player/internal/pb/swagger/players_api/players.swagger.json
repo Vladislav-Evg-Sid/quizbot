@@ -23,7 +23,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1SetResultsByQuizResponse"
+              "$ref": "#/definitions/v1SetResultsByQuizResponce"
             }
           },
           "default": {
@@ -33,6 +33,36 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "tgId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "themaId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "score",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "time",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
         "tags": [
           "PlayersService"
         ]
@@ -45,7 +75,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1GetTenQuestionsByTopicResponse"
+              "$ref": "#/definitions/v1GetTenQuestionsByTopicResponce"
             }
           },
           "default": {
@@ -68,45 +98,14 @@
         ]
       }
     },
-    "/api/player/topics/{topicId}/leaderboards": {
-      "get": {
-        "operationId": "PlayersService_GetLeaderboardByTopics",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1GetLeaderboardByTopicsResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "topicId",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
-          }
-        ],
-        "tags": [
-          "PlayersService"
-        ]
-      }
-    },
-    "/api/players/topics": {
+    "/api/users/topics": {
       "get": {
         "operationId": "PlayersService_GetAllTopics",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1GetAllTopicsResponse"
+              "$ref": "#/definitions/v1GetAllTopicsResponce"
             }
           },
           "default": {
@@ -151,7 +150,7 @@
         }
       }
     },
-    "v1GetAllTopicsResponse": {
+    "v1GetAllTopicsResponce": {
       "type": "object",
       "properties": {
         "topics": {
@@ -163,10 +162,7 @@
         }
       }
     },
-    "v1GetLeaderboardByTopicsResponse": {
-      "type": "object"
-    },
-    "v1GetTenQuestionsByTopicResponse": {
+    "v1GetTenQuestionsByTopicResponce": {
       "type": "object",
       "properties": {
         "questions": {
@@ -203,7 +199,7 @@
         }
       }
     },
-    "v1SetResultsByQuizResponse": {
+    "v1SetResultsByQuizResponce": {
       "type": "object"
     },
     "v1Topic": {

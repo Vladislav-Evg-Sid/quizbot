@@ -14,3 +14,10 @@ type TenQuestionsResponse struct {
 	Questions []Question `json:"questions"`
 	TopicId   int        `json:"topic_id"`
 }
+
+type FinishQuizRequest struct {
+	TgID    int64 `json:"tg_id"`
+	ThemaID int32 `json:"thema_id"`
+	Score   int32 `json:"score"`
+	Time    int32 `json:"time"`
+}

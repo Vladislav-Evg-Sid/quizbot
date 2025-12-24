@@ -13,7 +13,7 @@ type ClientBotHandler interface {
 	HandleSelectThemsProcessing(ctx context.Context, thema string, tg_id int64, session *models.UserSession, bot *tgbotapi.BotAPI)
 	HandleChooseThemeCommand(ctx context.Context, bot *tgbotapi.BotAPI, msg *tgbotapi.Message, playerAPIURL string, session *models.UserSession)
 	HandleGetQuestionsForQuiz(ctx context.Context, bot *tgbotapi.BotAPI, topicName string, tg_id int64, session *models.UserSession, playerAPIURL string)
-	HandleProcessAnswer(ctx context.Context, bot *tgbotapi.BotAPI, userAnswer string, tg_id int64)
+	HandleProcessAnswer(ctx context.Context, bot *tgbotapi.BotAPI, userAnswer string, tg_id int64, playerAPIURL string)
 }
 
 type BotHandler struct {

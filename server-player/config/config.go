@@ -10,6 +10,7 @@ import (
 type Config struct {
 	Database DatabaseConfig `yaml:"database"`
 	Service  ServiceConfig  `yaml:"service"`
+	Kafka    KafkaConfig    `yaml:"kafka"`
 }
 
 type DatabaseConfig struct {
@@ -27,7 +28,12 @@ type ServiceConfig struct {
 	SwaggerPath string `yaml:"swagger_path"`
 }
 
-// TODO: Прописать конфиги для кафки
+type KafkaConfig struct {
+	Host                   string `yaml:"host"`
+	Port                   int    `yaml:"port"`
+	TopicNameAddQuizResult string `yaml:"topic_name_add_quiz_results"`
+}
+
 func LoadConfig(filename string) (*Config, error) {
 	data, err := os.ReadFile(filename)
 	if err != nil {

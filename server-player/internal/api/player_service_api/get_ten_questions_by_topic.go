@@ -11,21 +11,21 @@ import (
 	"github.com/samber/lo"
 )
 
-func (s *PlayerServiceAPI) GetTenQuestionsByTopic(ctx context.Context, req *players_api.GetTenQuestionsByTopicRequest) (*players_api.GetTenQuestionsByTopicResponse, error) {
+func (s *PlayerServiceAPI) GetTenQuestionsByTopic(ctx context.Context, req *players_api.GetTenQuestionsByTopicRequest) (*players_api.GetTenQuestionsByTopicResponce, error) {
 	topic_name := req.TopicName
 	log.Printf("Received request, %v", topic_name)
 
 	response, topic_id, err := s.playerService.GetTenQuestionsByTopic(ctx, topic_name)
 	if err != nil {
-		return &players_api.GetTenQuestionsByTopicResponse{}, err
+		return &players_api.GetTenQuestionsByTopicResponce{}, err
 	}
 
 	response, err = s.SelectTenQuestions(response)
 	if err != nil {
-		return &players_api.GetTenQuestionsByTopicResponse{}, err
+		return &players_api.GetTenQuestionsByTopicResponce{}, err
 	}
 
-	return &players_api.GetTenQuestionsByTopicResponse{
+	return &players_api.GetTenQuestionsByTopicResponce{
 		Questions: mapTenQuestionsByResponce(response),
 		TopicId:   int64(topic_id),
 	}, nil

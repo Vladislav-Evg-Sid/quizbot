@@ -30,9 +30,11 @@ services:
     networks:
       - admin-db-network
       - client-admin-network
+      - kafka-network
     volumes:
       - ./server-admin:/app
       - ./server-admin/.air.toml:/app/.air.toml
+      - ./server-admin/tmp:/app/tmp
     environment:
       - DB_HOST=${POSTGRES_HOST_ADMIN}
       - DB_PORT=${POSTGRES_INTERNAL_PORT_ADMIN}
@@ -44,6 +46,9 @@ services:
       - SERVICE_REST_PORT=${SERVICE_EXTERNAL_PORT_ADMIN}
       - SERVICE_GRPC_PORT=${SERVICE_GRPC_PORT_ADMIN}
       - configPath=${CONFIG_PATH_ADMIN}
+      - KAFKA_HOST=${KAFKA_HOST}
+      - KAFKA_PORT=${KAFKA_HOST_INTERANL_PORT}
+      - KAFKA_TOPIC_ADD_QUIZ_RESULT=${KAFKA_TOPIC_ADD_QUIZ_RESULT}
     depends_on:
       postgres-admin:
         condition: service_healthy
@@ -79,9 +84,11 @@ services:
     networks:
       - player-db-network
       - client-player-network
+      - kafka-network
     volumes:
       - ./server-player:/app
       - ./server-player/.air.toml:/app/.air.toml
+      - ./server-player/tmp:/app/tmp
     environment:
       - DB_HOST=${POSTGRES_HOST_PLAYER}
       - DB_PORT=${POSTGRES_INTERNAL_PORT_PLAYER}
@@ -93,6 +100,9 @@ services:
       - SERVICE_REST_PORT=${SERVICE_EXTERNAL_PORT_PLAYER}
       - SERVICE_GRPC_PORT=${SERVICE_GRPC_PORT_PLAYER}
       - configPath=${CONFIG_PATH_PLAYER}
+      - KAFKA_HOST=${KAFKA_HOST}
+      - KAFKA_PORT=${KAFKA_HOST_INTERANL_PORT}
+      - KAFKA_TOPIC_ADD_QUIZ_RESULT=${KAFKA_TOPIC_ADD_QUIZ_RESULT}
     depends_on:
       postgres-player:
         condition: service_healthy
@@ -105,7 +115,7 @@ services:
     networks:
       - redis-network
     volumes:
-      - ./redis-data:/data
+      - redis-data:/data
     command: redis-server --appendonly yes --bind 0.0.0.0
     restart: unless-stopped
 
@@ -135,7 +145,45 @@ services:
       - ./client/.air.toml:/app/.air.toml
       - ./client:/app
       - ./.env:/app/.env
+      - ./client/tmp:/app/tmp
 
+  quiz-kafka:
+    image: apache/kafka:latest
+    container_name: quizbot-kafka
+    environment:
+      - CLUSTER_ID=${KAFKA_CLUSTER_ID}
+      - KAFKA_NODE_ID=${KAFKA_NODE_ID}
+      - KAFKA_PROCESS_ROLES=${KAFKA_PROCESS_ROLES}
+      - KAFKA_LISTENERS=PLAINTEXT_HOST://:${KAFKA_HOST_INTERANL_PORT},PLAINTEXT_DOCKER://:${KAFKA_DOCKER_INTERNAL_PORT},CONTROLLER://:${KAFKA_CONTROLLER_PORT}
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT_HOST://localhost:${KAFKA_HOST_INTERANL_PORT},PLAINTEXT_DOCKER://kafka:${KAFKA_DOCKER_INTERNAL_PORT}
+      - KAFKA_CONTROLLER_LISTENER_NAMES=${KAFKA_CONTROLLER_LISTENER_NAMES}
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:${KAFKA_CONTROLLER_PORT}
+      - KAFKA_INTER_BROKER_LISTENER_NAME=${KAFKA_INTER_BROKER_LISTENER_NAME}
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR}
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=${KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS}
+      - KAFKA_LOG_DIRS=${KAFKA_LOG_DIRS}
+    ports:
+      - "${KAFKA_HOST_EXTERNAL_PORT}:${KAFKA_HOST_INTERANL_PORT}"
+      - "${KAFKA_DOCKER_EXTERNAL_PORT}:${KAFKA_DOCKER_INTERNAL_PORT}"
+    volumes:
+      - kafka_data:/kafka/kraft-combined-logs
+    networks:
+      - kafka-network
+
+  quiz-kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: quizbot-kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "${KAFKA_UI_HOST_EXTERNAL_PORT}:${KAFKA_UI_HOST_INTERNAL_PORT}"
+    environment:
+      - KAFKA_CLUSTERS_0_BOOTSTRAP_SERVERS=kafka:${KAFKA_DOCKER_INTERNAL_PORT}
+      - KAFKA_CLUSTERS_0_NAME=${KAFKA_CLUSTERS_0_NAME}
+      - KAFKA_UI_AUTH_ENABLED=${KAFKA_UI_AUTH_ENABLED}
+    networks:
+      - students-net
 networks:
   client-admin-network:
     driver: bridge
@@ -151,7 +199,12 @@ networks:
   
   redis-network:
     driver: bridge
+  
+  kafka-network:
+    driver: bridge
 
 volumes:
   db-admin-data:
   db-player-data:
+  kafka_data:
+  redis-data:

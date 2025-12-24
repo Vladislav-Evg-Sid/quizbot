@@ -15,7 +15,6 @@ type GameSession struct {
 	TopicID              int        `json:"topic_id"`
 	CurrentQuestionIndex int        `json:"current_question_index"`
 	Score                int        `json:"score"`
-	TotalTime            int        `json:"total_time"`
 	StartedAt            time.Time  `json:"started_at"`
 	Questions            []Question `json:"questions"`
 }

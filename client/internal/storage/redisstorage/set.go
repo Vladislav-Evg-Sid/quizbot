@@ -18,7 +18,6 @@ func (redisClient *RedisStorage) CreateGameSession(ctx context.Context, userID i
 		TopicID:              topicID,
 		CurrentQuestionIndex: 0,
 		Score:                0,
-		TotalTime:            0,
 		StartedAt:            time.Now(),
 		Questions:            questions,
 	}

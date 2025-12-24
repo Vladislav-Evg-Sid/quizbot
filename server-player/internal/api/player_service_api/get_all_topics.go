@@ -9,14 +9,14 @@ import (
 	"github.com/samber/lo"
 )
 
-func (s *PlayerServiceAPI) GetAllTopics(ctx context.Context, req *players_api.GetAllTopicsRequest) (*players_api.GetAllTopicsResponse, error) {
+func (s *PlayerServiceAPI) GetAllTopics(ctx context.Context, req *players_api.GetAllTopicsRequest) (*players_api.GetAllTopicsResponce, error) {
 	log.Print("Received request")
 
 	responce, err := s.playerService.GetAllTopics(ctx)
 	if err != nil {
-		return &players_api.GetAllTopicsResponse{}, err
+		return &players_api.GetAllTopicsResponce{}, err
 	}
-	return &players_api.GetAllTopicsResponse{
+	return &players_api.GetAllTopicsResponce{
 		Topics: mapTopicsByResponce(responce),
 	}, nil
 }

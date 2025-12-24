@@ -75,7 +75,7 @@ func (h *BotHandler) HandleUpdate(tgBot *TelegramBot, update tgbotapi.Update, cf
 			tgBot.Bot.Send(tgbotapi.NewMessage(update.Message.From.ID, "Выбирите действие из кнопок"))
 		}
 	case session.CurrentStep == "gameProcess":
-		h.handler.HandleProcessAnswer(ctx, tgBot.Bot, update.Message.Text, update.Message.From.ID)
+		h.handler.HandleProcessAnswer(ctx, tgBot.Bot, update.Message.Text, update.Message.From.ID, cfg.Network.PlayerREST)
 	}
 }
 

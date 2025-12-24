@@ -12,7 +12,7 @@ import (
 )
 
 func (h *ClientBotHandler) HandleChooseThemeCommand(ctx context.Context, bot *tgbotapi.BotAPI, msg *tgbotapi.Message, playerAPIURL string, session *models.UserSession) {
-	resp, err := http.Get(playerAPIURL + "/api/players/topics")
+	resp, err := http.Get(playerAPIURL + "/api/users/topics")
 	if err != nil {
 		log.Printf("Error calling player API: %v", err)
 		bot.Send(tgbotapi.NewMessage(msg.Chat.ID, "❌ Ошибка соединения с сервером"))

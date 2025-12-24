@@ -1,6 +1,7 @@
 package processors
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -10,6 +11,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Vladislav-Evg-Sid/quizbot/client/internal/models"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -73,7 +75,7 @@ func (h *ClientBotHandler) HandleGetQuestionsForQuiz(ctx context.Context, bot *t
 	}
 }
 
-func (h *ClientBotHandler) HandleProcessAnswer(ctx context.Context, bot *tgbotapi.BotAPI, userAnswer string, tg_id int64) {
+func (h *ClientBotHandler) HandleProcessAnswer(ctx context.Context, bot *tgbotapi.BotAPI, userAnswer string, tg_id int64, playerAPI string) {
 	hardLevel2Score := map[string]int{
 		"простой": 1,
 		"средний": 2,
@@ -103,7 +105,6 @@ func (h *ClientBotHandler) HandleProcessAnswer(ctx context.Context, bot *tgbotap
 
 	if session.CurrentQuestionIndex == len(session.Questions) {
 		h.redis.DeleteGameSession(ctx, tg_id, session.SessionID)
-		// Добавить запись в БД
 		userSession, err := h.redis.GetUserSession(ctx, tg_id)
 		if err != nil {
 			log.Printf("Error read redis: %v", err)
@@ -122,6 +123,23 @@ func (h *ClientBotHandler) HandleProcessAnswer(ctx context.Context, bot *tgbotap
 
 		new_msg := tgbotapi.NewMessage(tg_id, "Спасибо за игру!\nВаш результат: "+strconv.Itoa(session.Score)+"/22")
 		new_msg.ReplyMarkup = keyboard
+
+		quizResults := models.FinishQuizRequest{
+			TgID:    tg_id,
+			ThemaID: int32(session.TopicID),
+			Score:   int32(session.Score),
+			Time:    int32(time.Since(session.StartedAt).Seconds()),
+		}
+		jsonData, _ := json.Marshal(quizResults)
+		req, _ := http.NewRequest("PUT", playerAPI+"/api/player/quiz/finish", bytes.NewBuffer(jsonData))
+		req.Header.Set("Content-Type", "application/json")
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			log.Printf("Error calling admin API: %v", err)
+			bot.Send(tgbotapi.NewMessage(tg_id, "❌ Ошибка соединения с сервером"))
+			return
+		}
+		defer resp.Body.Close()
 
 		userSession.CurrentStep = "root"
 		err = h.redis.UpdateUserSession(ctx, userSession)
