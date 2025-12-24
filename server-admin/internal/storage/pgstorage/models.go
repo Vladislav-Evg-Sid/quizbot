@@ -3,10 +3,10 @@ package pgstorage
 const (
 	users_tableName            = "users"
 	users_IDColumnName         = "id"
+	users_RoleIDColumnName     = "role_id"
 	users_TelegramIDColumnName = "telegram_id"
 	users_NameColumnName       = "name"
 	users_UsernameColumnName   = "username"
-	users_IsAdminColumnName    = "is_admin"
 	users_CreatedAtColumnName  = "created_at"
 
 	rating_tableName                = "rating"
@@ -17,4 +17,17 @@ const (
 	rating_CompletionTimeColumnName = "completion_time"
 	rating_CreatedAtColumnName      = "created_at"
 	rating_UpdatedAtColumnName      = "updated_at"
+
+	roles_tableName      = "roles"
+	roles_IDColumnName   = "id"
+	roles_NameColumnName = "name"
+
+	permisions_tableName      = "permisions"
+	permisions_IDColumnName   = "id"
+	permisions_NameColumnName = "name"
+
+	rolePermision_tableName             = "role_permision"
+	rolePermision_IDColumnName          = "id"
+	rolePermision_RoleIDColumnName      = "role_id"
+	rolePermision_PermisionIDColumnName = "permision_id"
 )
