@@ -19,3 +19,9 @@ type GameSession struct {
 	StartedAt            time.Time  `json:"started_at"`
 	Questions            []Question `json:"questions"`
 }
+
+type UserSession struct {
+	UserID      int64    `json:"user_id"`
+	Permissions []string `json:"permissions"`
+	CurrentStep string   `json:"current_step"`
+}

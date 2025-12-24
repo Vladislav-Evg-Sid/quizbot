@@ -21,7 +21,7 @@ func (storage *PGstorage) SetUserData(ctx context.Context, tg_id int64, name, us
 	user.Name = name
 	user.Username = username
 
-	err = storage.db.QueryRow(ctx, queryText, args...).Scan(&user.ID, &user.IsAdmin)
+	err = storage.db.QueryRow(ctx, queryText, args...).Scan(&user.ID, &user.RoleID)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "quering error")
@@ -37,18 +37,66 @@ func (storage *PGstorage) getQuerySetUserData(tg_id int64, name, username string
 		users_TelegramIDColumnName,
 		users_NameColumnName,
 		users_UsernameColumnName,
-		users_IsAdminColumnName,
+		users_RoleIDColumnName,
 	).Values(
 		tg_id,
 		name,
 		username,
-		false,
+		2,
 	).Suffix(fmt.Sprintf(`
 			ON CONFLICT (%v) 
 			DO UPDATE SET %v = EXCLUDED.%v, %v = EXCLUDED.%v
 			RETURNING %v, %v
 		`,
-		users_TelegramIDColumnName, users_NameColumnName, users_NameColumnName, users_UsernameColumnName, users_UsernameColumnName, users_IDColumnName, users_IsAdminColumnName,
+		users_TelegramIDColumnName, users_NameColumnName, users_NameColumnName, users_UsernameColumnName, users_UsernameColumnName, users_IDColumnName, users_RoleIDColumnName,
 	)).PlaceholderFormat(squirrel.Dollar)
+	return q
+}
+
+func (storage *PGstorage) GetUserPermissions(ctx context.Context, tg_id int64) (*models.Permissions, error) {
+	query := storage.getQueryGetUserPermissions(tg_id)
+	queryText, args, err := query.ToSql()
+	if err != nil {
+		return nil, errors.Wrap(err, "generate query error")
+	}
+
+	rows, err := storage.db.Query(ctx, queryText, args...)
+	if err != nil {
+		return nil, errors.Wrap(err, "quering error")
+	}
+
+	var permissions models.Permissions
+	defer rows.Close()
+	for rows.Next() {
+		var p string
+		if err := rows.Scan(&p); err != nil {
+			return nil, errors.Wrap(err, "failed to scan row")
+		}
+		permissions.Permissions = append(permissions.Permissions, p)
+	}
+	return &permissions, nil
+
+}
+
+func (storage *PGstorage) getQueryGetUserPermissions(tg_id int64) squirrel.Sqlizer {
+	q := squirrel.Select(
+		fmt.Sprintf(`%s.%s`, permisions_tableName, permisions_NameColumnName),
+	).From(
+		permisions_tableName,
+	).Join(
+		fmt.Sprintf(`%s ON %s.%s = %s.%s`,
+			rolePermision_tableName, rolePermision_tableName, rolePermision_PermisionIDColumnName, permisions_tableName, permisions_IDColumnName,
+		),
+	).Join(
+		fmt.Sprintf(`%s ON %s.%s = %s.%s`,
+			roles_tableName, roles_tableName, roles_IDColumnName, rolePermision_tableName, rolePermision_RoleIDColumnName,
+		),
+	).Join(
+		fmt.Sprintf(`%s ON %s.%s = %s.%s`,
+			users_tableName, users_tableName, users_RoleIDColumnName, roles_tableName, roles_IDColumnName,
+		),
+	).Where(squirrel.Eq{
+		fmt.Sprintf("%s.%s", users_tableName, users_TelegramIDColumnName): tg_id,
+	}).PlaceholderFormat(squirrel.Dollar)
 	return q
 }

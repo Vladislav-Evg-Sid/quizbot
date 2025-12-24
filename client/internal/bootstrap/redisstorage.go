@@ -8,7 +8,7 @@ import (
 	"github.com/Vladislav-Evg-Sid/quizbot/client/internal/storage/redisstorage"
 )
 
-func InitRedis(cfg *config.Config) *redisstorage.RediStorage {
+func InitRedis(cfg *config.Config) *redisstorage.RedisStorage {
 	redis_URL := cfg.Redis.Url
 	redis_password := cfg.Redis.Password
 	redis_db := cfg.Redis.Database

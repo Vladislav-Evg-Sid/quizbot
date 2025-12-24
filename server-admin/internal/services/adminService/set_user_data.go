@@ -7,6 +7,9 @@ import (
 )
 
 func (s *AdminService) SetUserData(ctx context.Context, tg_id int64, name, username string) (*models.User, error) {
-	// TODO: Сделать обработку входных параметров
 	return s.adminStorage.SetUserData(ctx, tg_id, name, username)
+}
+
+func (s *AdminService) GetUserPermissions(ctx context.Context, tg_id int64) (*models.Permissions, error) {
+	return s.adminStorage.GetUserPermissions(ctx, tg_id)
 }

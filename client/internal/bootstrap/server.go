@@ -9,16 +9,19 @@ import (
 	"time"
 
 	"github.com/Vladislav-Evg-Sid/quizbot/client/config"
+	"github.com/Vladislav-Evg-Sid/quizbot/client/internal/bot/processors"
 	"github.com/Vladislav-Evg-Sid/quizbot/client/internal/bot/telegrambot"
 	"github.com/Vladislav-Evg-Sid/quizbot/client/internal/storage/redisstorage"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func AppRun(cfg *config.Config, clientRedis *redisstorage.RediStorage, tgBot *telegrambot.TelegramBot) {
+func AppRun(cfg *config.Config, clientRedis *redisstorage.RedisStorage, tgBot *telegrambot.TelegramBot) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	botHandler := telegrambot.NewBotHandler(clientRedis)
+	handler := processors.NewClientBotHandler(clientRedis)
+
+	botHandler := telegrambot.NewBotHandler(clientRedis, handler)
 
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)

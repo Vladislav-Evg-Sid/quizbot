@@ -82,27 +82,27 @@ func (x *SetUserDataRequest) GetUsername() string {
 	return ""
 }
 
-type SetUserDataResponse struct {
+type SetUserDataResponce struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *SetUserDataResponse) Reset() {
-	*x = SetUserDataResponse{}
+func (x *SetUserDataResponce) Reset() {
+	*x = SetUserDataResponce{}
 	mi := &file_admins_api_admins_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *SetUserDataResponse) String() string {
+func (x *SetUserDataResponce) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*SetUserDataResponse) ProtoMessage() {}
+func (*SetUserDataResponce) ProtoMessage() {}
 
-func (x *SetUserDataResponse) ProtoReflect() protoreflect.Message {
+func (x *SetUserDataResponce) ProtoReflect() protoreflect.Message {
 	mi := &file_admins_api_admins_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -114,14 +114,102 @@ func (x *SetUserDataResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use SetUserDataResponse.ProtoReflect.Descriptor instead.
-func (*SetUserDataResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use SetUserDataResponce.ProtoReflect.Descriptor instead.
+func (*SetUserDataResponce) Descriptor() ([]byte, []int) {
 	return file_admins_api_admins_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *SetUserDataResponse) GetUser() *User {
+func (x *SetUserDataResponce) GetUser() *User {
 	if x != nil {
 		return x.User
+	}
+	return nil
+}
+
+type GetUserPermissionsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TelegramId    int64                  `protobuf:"varint,1,opt,name=telegram_id,json=telegramId,proto3" json:"telegram_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserPermissionsRequest) Reset() {
+	*x = GetUserPermissionsRequest{}
+	mi := &file_admins_api_admins_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserPermissionsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserPermissionsRequest) ProtoMessage() {}
+
+func (x *GetUserPermissionsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_admins_api_admins_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserPermissionsRequest.ProtoReflect.Descriptor instead.
+func (*GetUserPermissionsRequest) Descriptor() ([]byte, []int) {
+	return file_admins_api_admins_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *GetUserPermissionsRequest) GetTelegramId() int64 {
+	if x != nil {
+		return x.TelegramId
+	}
+	return 0
+}
+
+type GetUserPermissionsResponce struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Permissions   []string               `protobuf:"bytes,1,rep,name=permissions,proto3" json:"permissions,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserPermissionsResponce) Reset() {
+	*x = GetUserPermissionsResponce{}
+	mi := &file_admins_api_admins_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserPermissionsResponce) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserPermissionsResponce) ProtoMessage() {}
+
+func (x *GetUserPermissionsResponce) ProtoReflect() protoreflect.Message {
+	mi := &file_admins_api_admins_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserPermissionsResponce.ProtoReflect.Descriptor instead.
+func (*GetUserPermissionsResponce) Descriptor() ([]byte, []int) {
+	return file_admins_api_admins_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetUserPermissionsResponce) GetPermissions() []string {
+	if x != nil {
+		return x.Permissions
 	}
 	return nil
 }
@@ -136,10 +224,16 @@ const file_admins_api_admins_proto_rawDesc = "" +
 	"telegramId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
 	"\busername\x18\x03 \x01(\tR\busername\"A\n" +
-	"\x13SetUserDataResponse\x12*\n" +
-	"\x04user\x18\x01 \x01(\v2\x16.admins.models.v1.UserR\x04user2\x8a\x01\n" +
+	"\x13SetUserDataResponce\x12*\n" +
+	"\x04user\x18\x01 \x01(\v2\x16.admins.models.v1.UserR\x04user\"<\n" +
+	"\x19GetUserPermissionsRequest\x12\x1f\n" +
+	"\vtelegram_id\x18\x01 \x01(\x03R\n" +
+	"telegramId\">\n" +
+	"\x1aGetUserPermissionsResponce\x12 \n" +
+	"\vpermissions\x18\x01 \x03(\tR\vpermissions2\xa8\x02\n" +
 	"\rAdminsService\x12y\n" +
-	"\vSetUserData\x12%.admins.service.v1.SetUserDataRequest\x1a&.admins.service.v1.SetUserDataResponse\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/users/startBJZHgithub.com/Vladislav-Evg-Sid/quizbot/server-admin/internal/pb/admins_apib\x06proto3"
+	"\vSetUserData\x12%.admins.service.v1.SetUserDataRequest\x1a&.admins.service.v1.SetUserDataResponce\"\x1b\x82\xd3\xe4\x93\x02\x15:\x01*\"\x10/api/users/start\x12\x9b\x01\n" +
+	"\x12GetUserPermissions\x12,.admins.service.v1.GetUserPermissionsRequest\x1a-.admins.service.v1.GetUserPermissionsResponce\"(\x82\xd3\xe4\x93\x02\"\x12 /api/users/{user_id}/permissionsBJZHgithub.com/Vladislav-Evg-Sid/quizbot/server-admin/internal/pb/admins_apib\x06proto3"
 
 var (
 	file_admins_api_admins_proto_rawDescOnce sync.Once
@@ -153,18 +247,22 @@ func file_admins_api_admins_proto_rawDescGZIP() []byte {
 	return file_admins_api_admins_proto_rawDescData
 }
 
-var file_admins_api_admins_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_admins_api_admins_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_admins_api_admins_proto_goTypes = []any{
-	(*SetUserDataRequest)(nil),  // 0: admins.service.v1.SetUserDataRequest
-	(*SetUserDataResponse)(nil), // 1: admins.service.v1.SetUserDataResponse
-	(*User)(nil),                // 2: admins.models.v1.User
+	(*SetUserDataRequest)(nil),         // 0: admins.service.v1.SetUserDataRequest
+	(*SetUserDataResponce)(nil),        // 1: admins.service.v1.SetUserDataResponce
+	(*GetUserPermissionsRequest)(nil),  // 2: admins.service.v1.GetUserPermissionsRequest
+	(*GetUserPermissionsResponce)(nil), // 3: admins.service.v1.GetUserPermissionsResponce
+	(*User)(nil),                       // 4: admins.models.v1.User
 }
 var file_admins_api_admins_proto_depIdxs = []int32{
-	2, // 0: admins.service.v1.SetUserDataResponse.user:type_name -> admins.models.v1.User
+	4, // 0: admins.service.v1.SetUserDataResponce.user:type_name -> admins.models.v1.User
 	0, // 1: admins.service.v1.AdminsService.SetUserData:input_type -> admins.service.v1.SetUserDataRequest
-	1, // 2: admins.service.v1.AdminsService.SetUserData:output_type -> admins.service.v1.SetUserDataResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
+	2, // 2: admins.service.v1.AdminsService.GetUserPermissions:input_type -> admins.service.v1.GetUserPermissionsRequest
+	1, // 3: admins.service.v1.AdminsService.SetUserData:output_type -> admins.service.v1.SetUserDataResponce
+	3, // 4: admins.service.v1.AdminsService.GetUserPermissions:output_type -> admins.service.v1.GetUserPermissionsResponce
+	3, // [3:5] is the sub-list for method output_type
+	1, // [1:3] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -182,7 +280,7 @@ func file_admins_api_admins_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_admins_api_admins_proto_rawDesc), len(file_admins_api_admins_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

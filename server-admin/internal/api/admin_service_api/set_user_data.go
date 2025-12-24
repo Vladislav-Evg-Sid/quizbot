@@ -8,24 +8,43 @@ import (
 	"github.com/Vladislav-Evg-Sid/quizbot/server-admin/internal/pb/admins_api"
 )
 
-func (s *AdminServiceAPI) SetUserData(ctx context.Context, req *admins_api.SetUserDataRequest) (*admins_api.SetUserDataResponse, error) {
+func (s *AdminServiceAPI) SetUserData(ctx context.Context, req *admins_api.SetUserDataRequest) (*admins_api.SetUserDataResponce, error) {
 	log.Print("Received request")
 
 	responce, err := s.adminService.SetUserData(ctx, req.TelegramId, req.Name, req.Username)
 	if err != nil {
-		return &admins_api.SetUserDataResponse{}, err
+		return &admins_api.SetUserDataResponce{}, err
 	}
-	return &admins_api.SetUserDataResponse{
-		User: mapUserByResponce(responce),
+
+	responcePermissions, err := s.adminService.GetUserPermissions(ctx, req.TelegramId)
+	if err != nil {
+		return &admins_api.SetUserDataResponce{}, err
+	}
+
+	return &admins_api.SetUserDataResponce{
+		User: mapUserByResponce(responce, &responcePermissions.Permissions),
 	}, err
 }
 
-func mapUserByResponce(userInfo *models.User) *admins_api.User {
+func mapUserByResponce(userInfo *models.User, permissionsInfo *[]string) *admins_api.User {
 	return &admins_api.User{
-		Id:         userInfo.ID,
-		TelegramId: userInfo.TelegramID,
-		Name:       userInfo.Name,
-		Username:   userInfo.Username,
-		IsAdmin:    userInfo.IsAdmin,
+		Id:          userInfo.ID,
+		TelegramId:  userInfo.TelegramID,
+		Name:        userInfo.Name,
+		Username:    userInfo.Username,
+		Permissions: *permissionsInfo,
 	}
+}
+
+func (s *AdminServiceAPI) GetUserPermissions(ctx context.Context, req *admins_api.GetUserPermissionsRequest) (*admins_api.GetUserPermissionsResponce, error) {
+	log.Printf("Received request, %d", req.TelegramId)
+
+	responce, err := s.adminService.GetUserPermissions(ctx, req.TelegramId)
+	if err != nil {
+		return &admins_api.GetUserPermissionsResponce{}, err
+	}
+
+	return &admins_api.GetUserPermissionsResponce{
+		Permissions: responce.Permissions,
+	}, nil
 }

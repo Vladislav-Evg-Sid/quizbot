@@ -7,11 +7,11 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-type RediStorage struct {
+type RedisStorage struct {
 	redis *redis.Client
 }
 
-func NewRedisStore(ctx context.Context, redis_URL, redis_password string, redis_db int) (*RediStorage, error) {
+func NewRedisStore(ctx context.Context, redis_URL, redis_password string, redis_db int) (*RedisStorage, error) {
 	redis_client := redis.NewClient(&redis.Options{
 		Addr:     redis_URL,
 		Password: redis_password,
@@ -23,5 +23,5 @@ func NewRedisStore(ctx context.Context, redis_URL, redis_password string, redis_
 		return nil, fmt.Errorf("failed to connect to Redis: %v; %v", err, redis_URL)
 	}
 
-	return &RediStorage{redis: redis_client}, nil
+	return &RedisStorage{redis: redis_client}, nil
 }

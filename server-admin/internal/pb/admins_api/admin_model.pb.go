@@ -27,7 +27,7 @@ type User struct {
 	TelegramId    int64                  `protobuf:"varint,2,opt,name=telegram_id,json=telegramId,proto3" json:"telegram_id,omitempty"`
 	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	Username      string                 `protobuf:"bytes,4,opt,name=username,proto3" json:"username,omitempty"`
-	IsAdmin       bool                   `protobuf:"varint,5,opt,name=is_admin,json=isAdmin,proto3" json:"is_admin,omitempty"`
+	Permissions   []string               `protobuf:"bytes,5,rep,name=permissions,proto3" json:"permissions,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -90,25 +90,25 @@ func (x *User) GetUsername() string {
 	return ""
 }
 
-func (x *User) GetIsAdmin() bool {
+func (x *User) GetPermissions() []string {
 	if x != nil {
-		return x.IsAdmin
+		return x.Permissions
 	}
-	return false
+	return nil
 }
 
 var File_models_admin_model_proto protoreflect.FileDescriptor
 
 const file_models_admin_model_proto_rawDesc = "" +
 	"\n" +
-	"\x18models/admin_model.proto\x12\x10admins.models.v1\"\x82\x01\n" +
+	"\x18models/admin_model.proto\x12\x10admins.models.v1\"\x89\x01\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1f\n" +
 	"\vtelegram_id\x18\x02 \x01(\x03R\n" +
 	"telegramId\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1a\n" +
-	"\busername\x18\x04 \x01(\tR\busername\x12\x19\n" +
-	"\bis_admin\x18\x05 \x01(\bR\aisAdminBJZHgithub.com/Vladislav-Evg-Sid/quizbot/server-admin/internal/pb/admins_apib\x06proto3"
+	"\busername\x18\x04 \x01(\tR\busername\x12 \n" +
+	"\vpermissions\x18\x05 \x03(\tR\vpermissionsBJZHgithub.com/Vladislav-Evg-Sid/quizbot/server-admin/internal/pb/admins_apib\x06proto3"
 
 var (
 	file_models_admin_model_proto_rawDescOnce sync.Once

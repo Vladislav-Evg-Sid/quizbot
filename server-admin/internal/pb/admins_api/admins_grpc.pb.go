@@ -19,14 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AdminsService_SetUserData_FullMethodName = "/admins.service.v1.AdminsService/SetUserData"
+	AdminsService_SetUserData_FullMethodName        = "/admins.service.v1.AdminsService/SetUserData"
+	AdminsService_GetUserPermissions_FullMethodName = "/admins.service.v1.AdminsService/GetUserPermissions"
 )
 
 // AdminsServiceClient is the client API for AdminsService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AdminsServiceClient interface {
-	SetUserData(ctx context.Context, in *SetUserDataRequest, opts ...grpc.CallOption) (*SetUserDataResponse, error)
+	SetUserData(ctx context.Context, in *SetUserDataRequest, opts ...grpc.CallOption) (*SetUserDataResponce, error)
+	GetUserPermissions(ctx context.Context, in *GetUserPermissionsRequest, opts ...grpc.CallOption) (*GetUserPermissionsResponce, error)
 }
 
 type adminsServiceClient struct {
@@ -37,10 +39,20 @@ func NewAdminsServiceClient(cc grpc.ClientConnInterface) AdminsServiceClient {
 	return &adminsServiceClient{cc}
 }
 
-func (c *adminsServiceClient) SetUserData(ctx context.Context, in *SetUserDataRequest, opts ...grpc.CallOption) (*SetUserDataResponse, error) {
+func (c *adminsServiceClient) SetUserData(ctx context.Context, in *SetUserDataRequest, opts ...grpc.CallOption) (*SetUserDataResponce, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(SetUserDataResponse)
+	out := new(SetUserDataResponce)
 	err := c.cc.Invoke(ctx, AdminsService_SetUserData_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *adminsServiceClient) GetUserPermissions(ctx context.Context, in *GetUserPermissionsRequest, opts ...grpc.CallOption) (*GetUserPermissionsResponce, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserPermissionsResponce)
+	err := c.cc.Invoke(ctx, AdminsService_GetUserPermissions_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +63,8 @@ func (c *adminsServiceClient) SetUserData(ctx context.Context, in *SetUserDataRe
 // All implementations must embed UnimplementedAdminsServiceServer
 // for forward compatibility.
 type AdminsServiceServer interface {
-	SetUserData(context.Context, *SetUserDataRequest) (*SetUserDataResponse, error)
+	SetUserData(context.Context, *SetUserDataRequest) (*SetUserDataResponce, error)
+	GetUserPermissions(context.Context, *GetUserPermissionsRequest) (*GetUserPermissionsResponce, error)
 	mustEmbedUnimplementedAdminsServiceServer()
 }
 
@@ -62,8 +75,11 @@ type AdminsServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAdminsServiceServer struct{}
 
-func (UnimplementedAdminsServiceServer) SetUserData(context.Context, *SetUserDataRequest) (*SetUserDataResponse, error) {
+func (UnimplementedAdminsServiceServer) SetUserData(context.Context, *SetUserDataRequest) (*SetUserDataResponce, error) {
 	return nil, status.Error(codes.Unimplemented, "method SetUserData not implemented")
+}
+func (UnimplementedAdminsServiceServer) GetUserPermissions(context.Context, *GetUserPermissionsRequest) (*GetUserPermissionsResponce, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetUserPermissions not implemented")
 }
 func (UnimplementedAdminsServiceServer) mustEmbedUnimplementedAdminsServiceServer() {}
 func (UnimplementedAdminsServiceServer) testEmbeddedByValue()                       {}
@@ -104,6 +120,24 @@ func _AdminsService_SetUserData_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AdminsService_GetUserPermissions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserPermissionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AdminsServiceServer).GetUserPermissions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AdminsService_GetUserPermissions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AdminsServiceServer).GetUserPermissions(ctx, req.(*GetUserPermissionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AdminsService_ServiceDesc is the grpc.ServiceDesc for AdminsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var AdminsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetUserData",
 			Handler:    _AdminsService_SetUserData_Handler,
+		},
+		{
+			MethodName: "GetUserPermissions",
+			Handler:    _AdminsService_GetUserPermissions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

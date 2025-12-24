@@ -9,6 +9,7 @@ import (
 
 type adminService interface {
 	SetUserData(ctx context.Context, tg_id int64, name, username string) (*models.User, error)
+	GetUserPermissions(ctx context.Context, tg_id int64) (*models.Permissions, error)
 }
 
 type AdminServiceAPI struct {

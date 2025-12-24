@@ -8,5 +8,5 @@ message User {
     int64 telegram_id = 2;
     string name = 3;
     string username = 4;
-    bool is_admin = 5;
+    repeated string permissions = 5;
 }

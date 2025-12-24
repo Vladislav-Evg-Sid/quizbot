@@ -9,10 +9,10 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-func (redisClient *RediStorage) GetUserSession(ctx context.Context, userID int64) (*models.GameSession, error) {
+func (redisClient *RedisStorage) GetPlayerSession(ctx context.Context, userID int64) (*models.GameSession, error) {
 	// Получаем session_id по user_id
-	userSessionKey := fmt.Sprintf("us:%d", userID)
-	sessionID, err := redisClient.redis.Get(ctx, userSessionKey).Result()
+	GameSessionKey := fmt.Sprintf("ps:%d", userID)
+	sessionID, err := redisClient.redis.Get(ctx, GameSessionKey).Result()
 	if err == redis.Nil {
 		return nil, nil // Сессия не найдена
 	} else if err != nil {
@@ -27,6 +27,24 @@ func (redisClient *RediStorage) GetUserSession(ctx context.Context, userID int64
 	}
 
 	var session models.GameSession
+	err = json.Unmarshal([]byte(sessionData), &session)
+	if err != nil {
+		return nil, err
+	}
+
+	return &session, nil
+}
+
+func (redisClient *RedisStorage) GetUserSession(ctx context.Context, userID int64) (*models.UserSession, error) {
+	sessionID := fmt.Sprintf("us:%d", userID)
+	sessionData, err := redisClient.redis.Get(ctx, sessionID).Result()
+	if err == redis.Nil {
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+
+	var session models.UserSession
 	err = json.Unmarshal([]byte(sessionData), &session)
 	if err != nil {
 		return nil, err

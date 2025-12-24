@@ -11,6 +11,12 @@ service AdminsService {
             body: "*"
         };
     }
+    
+    rpc GetUserPermissions (GetUserPermissionsRequest) returns (GetUserPermissionsResponce) {
+        option (google.api.http) = {
+            get: "/api/users/{user_id}/permissions"
+        };
+    }
 }
 
 message SetUserDataRequest {
@@ -21,4 +27,12 @@ message SetUserDataRequest {
 
 message SetUserDataResponce {
     admins.models.v1.User user = 1;
+}
+
+message GetUserPermissionsRequest {
+    int64 telegram_id = 1;
+}
+
+message GetUserPermissionsResponce {
+    repeated string permissions = 1;
 }
