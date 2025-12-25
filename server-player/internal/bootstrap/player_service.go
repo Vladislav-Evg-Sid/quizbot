@@ -8,6 +8,6 @@ import (
 	"github.com/Vladislav-Evg-Sid/quizbot/server-player/internal/storage/pgstorage"
 )
 
-func InitPlayerService(storage *pgstorage.PGstorage, cfg *config.Config) *playerService.PlayerService {
-	return playerService.NewPlayerService(context.Background(), storage)
+func InitPlayerService(storage *pgstorage.PGstorage, kafakaProducer *playerService.KafkaQuizResultProducer, cfg *config.Config) *playerService.PlayerService {
+	return playerService.NewPlayerService(context.Background(), storage, kafakaProducer)
 }

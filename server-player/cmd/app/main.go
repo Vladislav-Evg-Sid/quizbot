@@ -15,10 +15,12 @@ func main() {
 	}
 
 	playerStorage := bootstrap.InitPGStorage(cfg)
-	playerService := bootstrap.InitPlayerService(playerStorage, cfg)
+	quizResultProducer := bootstrap.InitKafkaProducer(cfg)
+	quizResultKafkaProducer := bootstrap.InitNewKafkaQuizResultProducer(cfg, quizResultProducer)
+	playerService := bootstrap.InitPlayerService(playerStorage, quizResultKafkaProducer, cfg)
 	playerInfoProcessor := bootstrap.InitPlayerInfoProcessor(playerService)
 	playerInfoUpsertConsumer := bootstrap.InitPlayerInfoUpsertConsumer(cfg, playerInfoProcessor)
-	playerAPI := bootstrap.InitPlayerServiceAPI(playerService)
+	playerAPI := bootstrap.InitPlayerServiceAPI(playerService, quizResultKafkaProducer)
 
 	bootstrap.AppRun(*playerAPI, playerInfoUpsertConsumer, cfg)
 }
