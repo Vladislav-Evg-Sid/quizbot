@@ -321,11 +321,11 @@ const file_players_api_players_proto_rawDesc = "" +
 	"\bthema_id\x18\x02 \x01(\x05R\athemaId\x12\x14\n" +
 	"\x05score\x18\x03 \x01(\x05R\x05score\x12\x12\n" +
 	"\x04time\x18\x04 \x01(\x05R\x04time\"\x1a\n" +
-	"\x18SetResultsByQuizResponce2\xd0\x03\n" +
+	"\x18SetResultsByQuizResponce2\xd3\x03\n" +
 	"\x0ePlayersService\x12|\n" +
 	"\fGetAllTopics\x12'.players.service.v1.GetAllTopicsRequest\x1a(.players.service.v1.GetAllTopicsResponce\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/api/users/topics\x12\xae\x01\n" +
-	"\x16GetTenQuestionsByTopic\x121.players.service.v1.GetTenQuestionsByTopicRequest\x1a2.players.service.v1.GetTenQuestionsByTopicResponce\"-\x82\xd3\xe4\x93\x02'\x12%/api/player/tenquestions/{topic_name}\x12\x8e\x01\n" +
-	"\x10SetResultsByQuiz\x12+.players.service.v1.SetResultsByQuizRequest\x1a,.players.service.v1.SetResultsByQuizResponce\"\x1f\x82\xd3\xe4\x93\x02\x19\x1a\x17/api/player/quiz/finishBLZJgithub.com/Vladislav-Evg-Sid/quizbot/server-player/internal/pb/players_apib\x06proto3"
+	"\x16GetTenQuestionsByTopic\x121.players.service.v1.GetTenQuestionsByTopicRequest\x1a2.players.service.v1.GetTenQuestionsByTopicResponce\"-\x82\xd3\xe4\x93\x02'\x12%/api/player/tenquestions/{topic_name}\x12\x91\x01\n" +
+	"\x10SetResultsByQuiz\x12+.players.service.v1.SetResultsByQuizRequest\x1a,.players.service.v1.SetResultsByQuizResponce\"\"\x82\xd3\xe4\x93\x02\x1c:\x01*\x1a\x17/api/player/quiz/finishBLZJgithub.com/Vladislav-Evg-Sid/quizbot/server-player/internal/pb/players_apib\x06proto3"
 
 var (
 	file_players_api_players_proto_rawDescOnce sync.Once

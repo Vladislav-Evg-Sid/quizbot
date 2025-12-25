@@ -35,32 +35,12 @@
         },
         "parameters": [
           {
-            "name": "tgId",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "themaId",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "score",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          },
-          {
-            "name": "time",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SetResultsByQuizRequest"
+            }
           }
         ],
         "tags": [
@@ -196,6 +176,27 @@
         },
         "level": {
           "type": "string"
+        }
+      }
+    },
+    "v1SetResultsByQuizRequest": {
+      "type": "object",
+      "properties": {
+        "tgId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "themaId": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "score": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "time": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
